@@ -48,6 +48,8 @@ public final class Start extends AbstractActivity implements TourActivity {
 
     private Location location;
 
+    private double setup = 0;
+
     private Start(String locationId, double theoreticalStart, double theoreticalEnd) {
         super();
         if (locationId != null) this.location = Location.Builder.newInstance().setId(locationId).build();
@@ -71,6 +73,7 @@ public final class Start extends AbstractActivity implements TourActivity {
         theoretical_earliestOperationStartTime = start.getTheoreticalEarliestOperationStartTime();
         theoretical_latestOperationStartTime = start.getTheoreticalLatestOperationStartTime();
         endTime = start.getEndTime();
+        setup = start.getSetupTime();
         setIndex(-1);
     }
 
@@ -164,7 +167,17 @@ public final class Start extends AbstractActivity implements TourActivity {
 	}
 
 	@Override
-	public void setSoftLatestOperationStartTime(double softLatest) {		
+	public void setSoftLatestOperationStartTime(double softLatest) {
+	}
+
+    @Override
+	public void setSetupTime(double setupTime) {
+		this.setup = setupTime;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
 	}
 
 }

@@ -338,8 +338,14 @@ public class SolutionAnalyser {
         private double transportCost(TourActivity activity) {
             double activity_transportCost = transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
             double activity_arrTime = prevActDeparture + transportCost.getTransportTime(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
-            double activity_softCost = softCosts.getSoftTimeWindowCost(activity, activity_arrTime, route.getVehicle());
-            return activity_transportCost + activity_softCost;
+            double activity_softCost = softCosts.getSoftTimeWindowCost(activity, activity_arrTime, route.getVehicle());double setupCost = 0.0;
+            double activity_setupCost = 0.0;
+            double coef = 1.0;
+            if(route.getVehicle() != null)
+                coef = route.getVehicle().getCoefSetupTime();
+            if(!prevAct.getLocation().equals(activity.getLocation()))
+                activity_setupCost = activity.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+            return activity_setupCost + activity_transportCost + activity_softCost;
         }
 
         private double transportTime(TourActivity activity) {

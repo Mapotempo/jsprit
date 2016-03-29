@@ -136,6 +136,11 @@ public interface TourActivity extends HasIndex {
      *
      * @return capacity
      */
+
+    public abstract void setSetupTime(double setupTime);
+
+    public abstract double getSetupTime();
+
     public abstract Capacity getSize();
 
     /**

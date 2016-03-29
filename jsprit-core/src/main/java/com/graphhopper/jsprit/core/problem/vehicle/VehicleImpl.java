@@ -101,6 +101,11 @@ public class VehicleImpl extends AbstractVehicle {
             return null;
         }
 
+		@Override
+		public double getCoefSetupTime() {
+			return 0;
+		}
+
     }
 
     /**
@@ -135,8 +140,10 @@ public class VehicleImpl extends AbstractVehicle {
         private Location endLocation;
 
         private Break aBreak;
-        
+
         private Capacity initCapa = null;
+
+        private double coefSetupTime = 1.0;
 
         private Builder(String id) {
             super();
@@ -278,6 +285,11 @@ public class VehicleImpl extends AbstractVehicle {
             this.aBreak = aBreak;
             return this;
         }
+        
+        public Builder setCoefSetupTime(double coefSetupTime) {
+        	this.coefSetupTime = coefSetupTime;
+        	return this;
+        }
     }
 
     /**
@@ -308,8 +320,10 @@ public class VehicleImpl extends AbstractVehicle {
     private final Location startLocation;
 
     private final Break aBreak;
-    
+
     private final Capacity initCapa;
+
+    private final double coefSetupTime;
 
     private VehicleImpl(Builder builder) {
         id = builder.id;
@@ -322,6 +336,7 @@ public class VehicleImpl extends AbstractVehicle {
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
         initCapa = builder.initCapa;
+        coefSetupTime = builder.coefSetupTime;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
         setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot, initCapa));
     }
@@ -385,6 +400,11 @@ public class VehicleImpl extends AbstractVehicle {
     public Break getBreak() {
         return aBreak;
     }
+
+	@Override
+	public double getCoefSetupTime() {
+		return coefSetupTime;
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()

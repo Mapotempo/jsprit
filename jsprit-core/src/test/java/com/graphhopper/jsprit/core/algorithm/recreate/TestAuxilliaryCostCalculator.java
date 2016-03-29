@@ -24,6 +24,8 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
+import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,6 +49,7 @@ public class TestAuxilliaryCostCalculator {
     public void doBefore() {
         vehicle = mock(Vehicle.class);
 
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("t").setCostPerTransportTime(1.).setCostPerDistance(1.).build();
         routingCosts = mock(VehicleRoutingTransportCosts.class);
         softCosts = new SoftTimeWindowCost(routingCosts, false);
         actCosts = mock(VehicleRoutingActivityCosts.class);
@@ -57,6 +60,7 @@ public class TestAuxilliaryCostCalculator {
         when(routingCosts.getTransportTime(loc("i"), loc("k"), 0.0, null, vehicle)).thenReturn(0.0);
         when(routingCosts.getTransportCost(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(3.0);
         when(routingCosts.getTransportTime(loc("k"), loc("j"), 0.0, null, vehicle)).thenReturn(0.0);
+        when(vehicle.getType()).thenReturn(type);
     }
 
     private Location loc(String i) {

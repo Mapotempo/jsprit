@@ -39,13 +39,17 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private double softLatest = Double.MAX_VALUE;
 
+    private double setup;
+
     public PickupService(Pickup pickup) {
         super();
         this.pickup = pickup;
+        this.setup = pickup.getSetupDuration();
     }
 
     public PickupService(Service service) {
         this.pickup = service;
+        this.setup = service.getSetupDuration();
     }
 
     private PickupService(PickupService pickupActivity) {
@@ -57,6 +61,7 @@ public final class PickupService extends AbstractActivity implements PickupActiv
         this.theoreticalLatest = pickupActivity.getTheoreticalLatestOperationStartTime();
         this.softEarliest = pickupActivity.getSoftLowerBoundOperationStartTime();
         this.softLatest = pickupActivity.getSoftUpperBoundOperationStartTime();
+        this.setup = pickupActivity.getSetupTime();
     }
 
     @Override
@@ -144,7 +149,8 @@ public final class PickupService extends AbstractActivity implements PickupActiv
         return "[type=" + getName() + "][locationId=" + getLocation().getId()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
@@ -161,4 +167,15 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 	public double getSoftUpperBoundOperationStartTime() {
         return softLatest;
 	}
+
+    @Override
+	public void setSetupTime(double setup) {
+		this.setup = setup;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
+	}
+
 }

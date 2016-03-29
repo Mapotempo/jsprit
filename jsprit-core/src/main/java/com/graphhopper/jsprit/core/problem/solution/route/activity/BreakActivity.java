@@ -31,6 +31,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     public double endTime;
 
+    public double setup = 0.0;
+
     private Location location;
 
     private double duration;
@@ -99,6 +101,7 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         this.soft_earliest = breakActivity.getSoftLowerBoundOperationStartTime();
         this.soft_latest = breakActivity.getSoftUpperBoundOperationStartTime();
         this.duration = breakActivity.getOperationTime();
+        this.setup = breakActivity.getSetupTime();
     }
 
 
@@ -170,7 +173,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
         return "[type=" + getName() + "][location=" + getLocation()
             + "][size=" + getSize().toString()
             + "][twStart=" + Activities.round(getTheoreticalEarliestOperationStartTime())
-            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime()) + "]";
+            + "][twEnd=" + Activities.round(getTheoreticalLatestOperationStartTime())
+            + "][Setup=" + Activities.round(getSetupTime()) + "]";
     }
 
     @Override
@@ -222,6 +226,16 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 	@Override
 	public double getSoftUpperBoundOperationStartTime() {
         return this.soft_latest;
+	}
+
+    @Override
+	public void setSetupTime(double setup) {
+		this.setup = setup;
+	}
+
+	@Override
+	public double getSetupTime() {
+		return setup;
 	}
 
 
