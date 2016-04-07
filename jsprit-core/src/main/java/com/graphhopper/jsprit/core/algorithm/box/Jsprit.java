@@ -34,6 +34,7 @@ import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.solution.SolutionCostCalculator;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -56,6 +57,8 @@ import java.util.concurrent.Executors;
 public class Jsprit {
 
     private final ActivityInsertionCostsCalculator activityInsertion;
+
+    private SoftTimeWindowCost softCosts;
 
     public enum Construction {
 
@@ -154,6 +157,8 @@ public class Jsprit {
         private Properties properties;
 
         private boolean addConstraints = true;
+        
+        private SoftTimeWindowCost softCosts;
 
         private Random random = RandomNumberGeneration.newInstance();
 
@@ -168,6 +173,7 @@ public class Jsprit {
         private Builder(VehicleRoutingProblem vrp) {
             this.vrp = vrp;
             properties = new Properties(createDefaultProperties());
+            this.softCosts = new SoftTimeWindowCost();
         }
 
         private Properties createDefaultProperties() {
@@ -339,6 +345,7 @@ public class Jsprit {
         this.random = builder.random;
         this.activityInsertion = builder.activityInsertionCalculator;
         this.acceptor = builder.solutionAcceptor;
+        this.softCosts = builder.softCosts;
     }
 
     private VehicleRoutingAlgorithm create(final VehicleRoutingProblem vrp) {
@@ -672,6 +679,7 @@ public class Jsprit {
                         if (act instanceof BreakActivity) hasBreak = true;
                         costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), act.getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());
                         costs += vrp.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
+                        costs += softCosts.getSoftTimeWindowCost(act, act.getArrTime(), route.getVehicle());
                         prevAct = act;
                     }
                     costs += vrp.getTransportCosts().getTransportCost(prevAct.getLocation(), route.getEnd().getLocation(), prevAct.getEndTime(), route.getDriver(), route.getVehicle());

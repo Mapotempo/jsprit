@@ -143,8 +143,10 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
             boolean pickupInsertionNotFulfilledBreak = true;
             for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
-                pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getStart());
-                pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getEnd());
+                pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getHardStart());
+                pickupShipment.setSoftEarliestoperationStartTime(pickupTimeWindow.getSoftStart());
+                pickupShipment.setSoftLatestOperationStartTime(pickupTimeWindow.getSoftEnd());
+                pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getHardEnd());
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(i);
                 insertionContext.setActivityContext(activityContext);
@@ -190,6 +192,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                     boolean deliveryInsertionNotFulfilledBreak = true;
                     for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
+                        deliverShipment.setSoftEarliestoperationStartTime(deliveryTimeWindow.getSoftStart());
+                        deliverShipment.setSoftLatestOperationStartTime(deliveryTimeWindow.getSoftEnd());
                         deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
                         ActivityContext activityContext_ = new ActivityContext();
                         activityContext_.setInsertionIndex(j);
@@ -234,8 +238,12 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
         pickupShipment.setTheoreticalEarliestOperationStartTime(bestPickupTimeWindow.getStart());
+        pickupShipment.setSoftEarliestoperationStartTime(bestPickupTimeWindow.getSoftStart());
+        pickupShipment.setSoftLatestOperationStartTime(bestPickupTimeWindow.getSoftEnd());
         pickupShipment.setTheoreticalLatestOperationStartTime(bestPickupTimeWindow.getEnd());
         deliverShipment.setTheoreticalEarliestOperationStartTime(bestDeliveryTimeWindow.getStart());
+        deliverShipment.setSoftEarliestoperationStartTime(bestDeliveryTimeWindow.getSoftStart());
+        deliverShipment.setSoftLatestOperationStartTime(bestDeliveryTimeWindow.getSoftEnd());
         deliverShipment.setTheoreticalLatestOperationStartTime(bestDeliveryTimeWindow.getEnd());
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliverShipment, deliveryInsertionIndex));

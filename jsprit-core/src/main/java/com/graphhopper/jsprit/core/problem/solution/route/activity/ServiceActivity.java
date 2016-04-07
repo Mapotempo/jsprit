@@ -32,6 +32,11 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
 
     private double theoreticalLatest;
 
+    private double softEarliest = 0.;
+
+    private double softLatest = Double.MAX_VALUE;
+
+
     /**
      * @return the arrTime
      */
@@ -82,6 +87,8 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
         setIndex(serviceActivity.getIndex());
         this.theoreticalEarliest = serviceActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = serviceActivity.getTheoreticalLatestOperationStartTime();
+        this.softEarliest = serviceActivity.getSoftLowerBoundOperationStartTime();
+        this.softLatest = serviceActivity.getSoftUpperBoundOperationStartTime();
     }
 
 
@@ -127,11 +134,27 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
     @Override
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         theoreticalEarliest = earliest;
+        if(this.softEarliest < earliest)
+        	this.softEarliest = earliest;
     }
 
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         theoreticalLatest = latest;
+        if(this.softLatest > latest)
+        	this.softLatest = latest;
+    }
+
+    public void setSoftEarliestoperationStartTime(double earliest) {
+    	this.softEarliest = earliest;
+    	if(this.theoreticalEarliest > earliest)
+    		this.theoreticalEarliest = earliest;
+    }
+
+    public void setSoftLatestOperationStartTime(double latest) {
+    	this.softLatest = latest;
+    	if(this.theoreticalLatest < latest)
+    		this.theoreticalLatest = latest;
     }
 
     @Override
@@ -174,5 +197,14 @@ public class ServiceActivity extends AbstractActivity implements TourActivity.Jo
         return service.getSize();
     }
 
+	@Override
+	public double getSoftLowerBoundOperationStartTime() {
+		return softEarliest;
+	}
+
+	@Override
+	public double getSoftUpperBoundOperationStartTime() {
+		return softLatest;
+	}
 
 }

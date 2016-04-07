@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.problem.cost.ForwardTransportCost;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -37,6 +38,8 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
     private VehicleRoutingActivityCosts activityCost;
 
     private ForwardTransportCost transportCost;
+
+    private SoftTimeWindowCost softCosts;
 
     private StateManager states;
 
@@ -66,6 +69,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
         this.transportCost = transportCost;
         this.states = states;
         timeTracker = new ActivityTimeTracker(transportCost, activityCost);
+        this.softCosts = new SoftTimeWindowCost();
     }
 
     public UpdateVariableCosts(VehicleRoutingActivityCosts activityCosts, VehicleRoutingTransportCosts transportCosts, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy) {
@@ -73,6 +77,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
         this.transportCost = transportCosts;
         this.states = stateManager;
         timeTracker = new ActivityTimeTracker(transportCosts, activityPolicy, activityCosts);
+        this.softCosts = new SoftTimeWindowCost();
     }
 
     @Override
@@ -89,9 +94,11 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
 
         double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), act.getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
         double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+        double softCost = softCosts.getSoftTimeWindowCost(act, timeTracker.getActArrTime(), vehicleRoute.getVehicle());
 
         totalOperationCost += transportCost;
         totalOperationCost += actCost;
+        totalOperationCost += softCost;
 
         states.putInternalTypedActivityState(act, InternalStates.COSTS, totalOperationCost);
 

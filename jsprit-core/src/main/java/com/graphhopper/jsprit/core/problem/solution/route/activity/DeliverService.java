@@ -35,6 +35,10 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     private double theoreticalEarliest = 0;
 
     private double theoreticalLatest = Double.MAX_VALUE;
+    
+    private double softEarliest = 0.;
+    
+    private double softLatest = Double.MAX_VALUE;
 
     public DeliverService(Delivery delivery) {
         super();
@@ -50,6 +54,8 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
         setIndex(deliveryActivity.getIndex());
         this.theoreticalEarliest = deliveryActivity.getTheoreticalEarliestOperationStartTime();
         this.theoreticalLatest = deliveryActivity.getTheoreticalLatestOperationStartTime();
+        this.softEarliest = deliveryActivity.getSoftLowerBoundOperationStartTime();
+        this.softLatest = deliveryActivity.getSoftUpperBoundOperationStartTime();
     }
 
     @Override
@@ -65,13 +71,28 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     @Override
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         theoreticalEarliest = earliest;
+        if(this.softEarliest < earliest)
+        	this.softEarliest = earliest;
     }
 
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         theoreticalLatest = latest;
+        if(this.softLatest > latest)
+        	this.softLatest = latest;
     }
 
+    public void setSoftEarliestoperationStartTime(double earliest) {
+    	this.softEarliest = earliest;
+    	if(this.theoreticalEarliest > earliest)
+    		this.theoreticalEarliest = earliest;
+    }
+
+    public void setSoftLatestOperationStartTime(double latest) {
+    	this.softLatest = latest;
+    	if(this.theoreticalLatest < latest)
+    		this.theoreticalLatest = latest;
+    }
 
     @Override
     public double getTheoreticalEarliestOperationStartTime() {
@@ -129,4 +150,14 @@ public final class DeliverService extends AbstractActivity implements DeliveryAc
     public Capacity getSize() {
         return capacity;
     }
+
+	@Override
+	public double getSoftLowerBoundOperationStartTime() {
+		return softEarliest;
+	}
+
+	@Override
+	public double getSoftUpperBoundOperationStartTime() {
+		return softLatest;
+	}
 }
