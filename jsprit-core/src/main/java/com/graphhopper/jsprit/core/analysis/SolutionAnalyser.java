@@ -333,7 +333,8 @@ public class SolutionAnalyser {
         }
 
         private double transportCost(TourActivity activity) {
-            return transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
+        	double activity_transportCost = transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
+            return activity_transportCost;
         }
 
         private double transportTime(TourActivity activity) {

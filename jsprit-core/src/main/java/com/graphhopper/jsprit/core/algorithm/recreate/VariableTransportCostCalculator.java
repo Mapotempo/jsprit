@@ -59,7 +59,7 @@ public class VariableTransportCostCalculator implements SoftActivityConstraint {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
-            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         }
         return totalCosts - oldCosts;
