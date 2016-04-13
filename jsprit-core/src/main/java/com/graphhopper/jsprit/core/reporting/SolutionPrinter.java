@@ -177,7 +177,7 @@ public class SolutionPrinter {
                 if(route.getVehicle() != null)
                 	coef = route.getVehicle().getCoefSetupTime();
                 if(!prevAct.getLocation().equals(act.getLocation()))
-                	c += act.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+                	c += act.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
 
                 c += problem.getActivityCosts().getActivityCost(act, act.getArrTime(), route.getDriver(), route.getVehicle());
                 c += problem.getSoftTimeWindowCost().getSoftTimeWindowCost(act, act.getArrTime(), route.getVehicle());

@@ -113,6 +113,7 @@ public class VehicleTypeImpl implements VehicleType {
             this.perUpperLatenessTimeUnit = perUpperLatenessTimeUnit;
         }
 
+
         @Override
         public String toString() {
             return "[fixed=" + fix + "][perTime=" + perTransportTimeUnit + "][perDistance=" + perDistanceUnit + "][perWaitingTimeUnit=" + perWaitingTimeUnit + "][perSetupTimeUnit=" + perSetupTimeUnit + "]";

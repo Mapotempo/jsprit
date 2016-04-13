@@ -344,7 +344,7 @@ public class SolutionAnalyser {
             if(route.getVehicle() != null)
                 coef = route.getVehicle().getCoefSetupTime();
             if(!prevAct.getLocation().equals(activity.getLocation()))
-                activity_setupCost = activity.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perTransportTimeUnit;
+                activity_setupCost = activity.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
             return activity_setupCost + activity_transportCost + activity_softCost;
         }
 
