@@ -69,7 +69,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
         this.transportCost = transportCost;
         this.states = states;
         timeTracker = new ActivityTimeTracker(transportCost, activityCost);
-        this.softCosts = new SoftTimeWindowCost();
+        this.softCosts = new SoftTimeWindowCost(transportCost);
     }
 
     public UpdateVariableCosts(VehicleRoutingActivityCosts activityCosts, VehicleRoutingTransportCosts transportCosts, StateManager stateManager, ActivityTimeTracker.ActivityPolicy activityPolicy) {
@@ -77,7 +77,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
         this.transportCost = transportCosts;
         this.states = stateManager;
         timeTracker = new ActivityTimeTracker(transportCosts, activityPolicy, activityCosts);
-        this.softCosts = new SoftTimeWindowCost();
+        this.softCosts = new SoftTimeWindowCost(transportCosts);
     }
 
     @Override

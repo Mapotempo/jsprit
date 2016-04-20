@@ -41,7 +41,7 @@ final class AuxilliaryCostCalculator {
         super();
         this.routingCosts = routingCosts;
         this.activityCosts = actCosts;
-        this.softCosts = new SoftTimeWindowCost();
+        this.softCosts = new SoftTimeWindowCost(routingCosts);
     }
 
     /**

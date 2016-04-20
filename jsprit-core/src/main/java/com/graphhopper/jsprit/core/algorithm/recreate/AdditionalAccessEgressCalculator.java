@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -35,6 +36,8 @@ class AdditionalAccessEgressCalculator {
 
     private VehicleRoutingTransportCosts routingCosts;
 
+    private SoftTimeWindowCost softCosts;
+
     /**
      * Constructs the estimator that estimates additional access/egress costs when operating route with a new vehicle that has different start/end-location.
      * <p>
@@ -44,6 +47,7 @@ class AdditionalAccessEgressCalculator {
      */
     public AdditionalAccessEgressCalculator(VehicleRoutingTransportCosts routingCosts) {
         this.routingCosts = routingCosts;
+        this.softCosts = new SoftTimeWindowCost(routingCosts);
     }
 
     public double getCosts(JobInsertionContext insertionContext) {
@@ -54,8 +58,9 @@ class AdditionalAccessEgressCalculator {
         Driver newDriver = insertionContext.getNewDriver();
         double newVehicleDepartureTime = insertionContext.getNewDepTime();
         if (!currentRoute.isEmpty()) {
-            double accessTransportCostNew = routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
-            double accessTransportCostOld = routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getDriver(), currentRoute.getVehicle());
+        	double newArrTime = newVehicleDepartureTime+routingCosts.getBackwardTransportTime(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
+            double accessTransportCostNew = softCosts.getSoftTimeWindowCost(currentRoute.getActivities().get(0),newArrTime,newVehicle) + routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
+            double accessTransportCostOld = softCosts.getSoftTimeWindowCost(currentRoute.getActivities().get(0), currentRoute.getActivities().get(0).getArrTime(), currentRoute.getVehicle()) + routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getDriver(), currentRoute.getVehicle());
 
             delta_access = accessTransportCostNew - accessTransportCostOld;
 
