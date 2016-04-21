@@ -256,14 +256,14 @@ public class VehicleTypeImpl implements VehicleType {
         
         public VehicleTypeImpl.Builder setCostPerLowerLatenessTime(double perLowerLatenessTime) {
             if (perLowerLatenessTime < 0.0) throw new IllegalStateException();
-        	this.perLowerLatenessTime = perLowerLatenessTime;
-        	return this;
+            this.perLowerLatenessTime = perLowerLatenessTime;
+            return this;
         }
         
         public VehicleTypeImpl.Builder setCostPerUpperLatenessTime(double perUpperLatenessTime) {
             if (perUpperLatenessTime < 0.0) throw new IllegalStateException();
-        	this.perUpperLatenessTime = perUpperLatenessTime;
-        	return this;
+            this.perUpperLatenessTime = perUpperLatenessTime;
+            return this;
         }
 
         public VehicleTypeImpl.Builder setCostPerSetupTime(double perSetupTime) {

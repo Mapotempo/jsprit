@@ -44,8 +44,6 @@ public final class RuinWorst extends AbstractRuinStrategy {
     private Logger logger = LoggerFactory.getLogger(RuinWorst.class);
 
     private VehicleRoutingProblem vrp;
-    
-    private SoftTimeWindowCost softCosts;
 
     private StateManager stateManager;
 
@@ -65,7 +63,6 @@ public final class RuinWorst extends AbstractRuinStrategy {
         super(vrp, stateManager);
         this.vrp = vrp;
         this.stateManager = stateManager;
-        this.softCosts = new SoftTimeWindowCost(vrp.getTransportCosts());
         setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {
@@ -148,7 +145,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
 
     private double savings(VehicleRoute route, TourActivity actBefore, TourActivity actToEval, TourActivity act) {
         double savings = c(actBefore, actToEval, route.getVehicle()) + c(actToEval, act, route.getVehicle()) - c(actBefore, act, route.getVehicle());
-        savings += softCosts.getSoftTimeWindowCost(route, actBefore, actToEval, act, actBefore.getEndTime());
+        savings += vrp.getSoftTimeWindowCost().getSoftTimeWindowCost(route, actBefore, actToEval, act, actBefore.getEndTime());
         return Math.max(0, savings + noiseMaker.makeNoise());
     }
 

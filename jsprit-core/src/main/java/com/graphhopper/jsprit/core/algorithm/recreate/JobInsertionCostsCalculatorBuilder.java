@@ -263,7 +263,7 @@ public class JobInsertionCostsCalculatorBuilder {
         ActivityInsertionCostsCalculator actInsertionCalc;
         ConfigureLocalActivityInsertionCalculator configLocal = null;
         if (activityInsertionCostCalculator == null && addDefaultCostCalc) {
-            actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), statesManager);
+            actInsertionCalc = new LocalActivityInsertionCostsCalculator(vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), vrp.getActivityCosts(), statesManager);
             configLocal = new ConfigureLocalActivityInsertionCalculator(vrp, (LocalActivityInsertionCostsCalculator) actInsertionCalc);
         } else if (activityInsertionCostCalculator == null && !addDefaultCostCalc) {
             actInsertionCalc = new ActivityInsertionCostsCalculator() {
@@ -287,12 +287,12 @@ public class JobInsertionCostsCalculatorBuilder {
             }
 
         };
-        ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(),actInsertionCalc, constraintManager);
+        ShipmentInsertionCalculator shipmentInsertion = new ShipmentInsertionCalculator(vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), vrp.getActivityCosts(),actInsertionCalc, constraintManager);
         shipmentInsertion.setJobActivityFactory(activityFactory);
-        ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
+        ServiceInsertionCalculator serviceInsertion = new ServiceInsertionCalculator(vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
         serviceInsertion.setJobActivityFactory(activityFactory);
 
-        BreakInsertionCalculator breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
+        BreakInsertionCalculator breakInsertionCalculator = new BreakInsertionCalculator(vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), vrp.getActivityCosts(), actInsertionCalc, constraintManager);
         breakInsertionCalculator.setJobActivityFactory(activityFactory);
 
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
@@ -320,7 +320,7 @@ public class JobInsertionCostsCalculatorBuilder {
     private CalculatorPlusListeners createStandardRoute(final VehicleRoutingProblem vrp, RouteAndActivityStateGetter activityStates2, int forwardLooking, int solutionMemory) {
         ActivityInsertionCostsCalculator routeLevelCostEstimator;
         if (activityInsertionCostCalculator == null && addDefaultCostCalc) {
-            RouteLevelActivityInsertionCostsEstimator routeLevelActivityInsertionCostsEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getActivityCosts(), activityStates2);
+            RouteLevelActivityInsertionCostsEstimator routeLevelActivityInsertionCostsEstimator = new RouteLevelActivityInsertionCostsEstimator(vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), vrp.getActivityCosts(), activityStates2);
             routeLevelActivityInsertionCostsEstimator.setForwardLooking(forwardLooking);
             routeLevelCostEstimator = routeLevelActivityInsertionCostsEstimator;
         } else if (activityInsertionCostCalculator == null && !addDefaultCostCalc) {
@@ -338,7 +338,7 @@ public class JobInsertionCostsCalculatorBuilder {
         } else {
             routeLevelCostEstimator = activityInsertionCostCalculator;
         }
-        ServiceInsertionOnRouteLevelCalculator jobInsertionCalculator = new ServiceInsertionOnRouteLevelCalculator(vrp.getTransportCosts(), vrp.getActivityCosts(), routeLevelCostEstimator, constraintManager, constraintManager);
+        ServiceInsertionOnRouteLevelCalculator jobInsertionCalculator = new ServiceInsertionOnRouteLevelCalculator(vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), vrp.getActivityCosts(), routeLevelCostEstimator, constraintManager, constraintManager);
         jobInsertionCalculator.setNuOfActsForwardLooking(forwardLooking);
         jobInsertionCalculator.setMemorySize(solutionMemory);
         jobInsertionCalculator.setStates(activityStates2);

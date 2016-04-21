@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
@@ -35,6 +36,8 @@ import static org.mockito.Mockito.when;
 public class TestAuxilliaryCostCalculator {
 
     private VehicleRoutingTransportCosts routingCosts;
+    
+    private SoftTimeWindowCost softCosts;
 
     private VehicleRoutingActivityCosts actCosts;
 
@@ -45,6 +48,7 @@ public class TestAuxilliaryCostCalculator {
         vehicle = mock(Vehicle.class);
 
         routingCosts = mock(VehicleRoutingTransportCosts.class);
+        softCosts = new SoftTimeWindowCost(routingCosts, false);
         actCosts = mock(VehicleRoutingActivityCosts.class);
 
         when(routingCosts.getTransportCost(loc("i"), loc("j"), 0.0, null, vehicle)).thenReturn(2.0);
@@ -70,7 +74,7 @@ public class TestAuxilliaryCostCalculator {
 
         when(vehicle.isReturnToDepot()).thenReturn(true);
 
-        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
+        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, softCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
         assertEquals(6.0, costs, 0.01);
     }
@@ -85,7 +89,7 @@ public class TestAuxilliaryCostCalculator {
 
         when(vehicle.isReturnToDepot()).thenReturn(true);
 
-        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
+        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, softCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
         assertEquals(6.0, costs, 0.01);
     }
@@ -101,7 +105,7 @@ public class TestAuxilliaryCostCalculator {
 
         when(vehicle.isReturnToDepot()).thenReturn(false);
 
-        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
+        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, softCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
         assertEquals(6.0, costs, 0.01);
     }
@@ -116,7 +120,7 @@ public class TestAuxilliaryCostCalculator {
 
         when(vehicle.isReturnToDepot()).thenReturn(false);
 
-        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, actCosts);
+        AuxilliaryCostCalculator aCalc = new AuxilliaryCostCalculator(routingCosts, softCosts, actCosts);
         double costs = aCalc.costOfPath(Arrays.asList(prevAct, newAct, nextAct), 0.0, null, vehicle);
         assertEquals(3.0, costs, 0.01);
     }

@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.algorithm.state.UpdateVariableCosts;
 import com.graphhopper.jsprit.core.problem.*;
 import com.graphhopper.jsprit.core.problem.constraint.ConstraintManager;
 import com.graphhopper.jsprit.core.problem.cost.AbstractForwardVehicleRoutingTransportCosts;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
@@ -53,6 +54,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
     ServiceInsertionOnRouteLevelCalculator serviceInsertion;
 
     VehicleRoutingTransportCosts costs;
+
+    SoftTimeWindowCost softCosts;
 
     AbstractVehicle vehicle;
 
@@ -99,6 +102,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 
         };
 
+        softCosts = new SoftTimeWindowCost(costs, false);
         first = Service.Builder.newInstance("1").setLocation(Location.newInstance("0,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         second = Service.Builder.newInstance("3").setLocation(Location.newInstance("10,0")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
         third = Service.Builder.newInstance("2").setLocation(Location.newInstance("10,10")).setTimeWindow(TimeWindow.newInstance(0.0, 100.0)).build();
@@ -112,7 +116,7 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
         states = new StateManager(vrp);
         states.updateLoadStates();
         states.updateTimeWindowStates();
-        states.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), states));
+        states.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), states));
 
         ConstraintManager cManager = new ConstraintManager(vrp, states);
         cManager.addLoadConstraint();
@@ -120,8 +124,8 @@ public class TestCalculatesServiceInsertionOnRouteLevel {
 
 
         ExampleActivityCostFunction activityCosts = new ExampleActivityCostFunction();
-        ActivityInsertionCostsCalculator actInsertionCostCalculator = new RouteLevelActivityInsertionCostsEstimator(costs, activityCosts, states);
-        serviceInsertion = new ServiceInsertionOnRouteLevelCalculator(costs, activityCosts, actInsertionCostCalculator, cManager, cManager);
+        ActivityInsertionCostsCalculator actInsertionCostCalculator = new RouteLevelActivityInsertionCostsEstimator(costs, softCosts, activityCosts, states);
+        serviceInsertion = new ServiceInsertionOnRouteLevelCalculator(costs, softCosts, activityCosts, actInsertionCostCalculator, cManager, cManager);
         serviceInsertion.setNuOfActsForwardLooking(4);
         serviceInsertion.setStates(states);
         serviceInsertion.setJobActivityFactory(new JobActivityFactory() {

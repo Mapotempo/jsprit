@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.problem.AbstractActivity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -57,6 +58,8 @@ public class TestRouteLevelActivityInsertionCostEstimator {
 
     private VehicleRoutingTransportCosts routingCosts;
 
+    private SoftTimeWindowCost softCosts;
+
     private VehicleRoutingActivityCosts activityCosts;
 
     private StateManager stateManager;
@@ -64,7 +67,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
     @Before
     public void doBefore() {
         routingCosts = CostFactory.createEuclideanCosts();
-
+        softCosts = new SoftTimeWindowCost(routingCosts, false);
         activityCosts = new VehicleRoutingActivityCosts() {
 
             @Override
@@ -106,7 +109,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         }).addService(s1).addService(s2).addService(s3).build();
 
         stateManager = new StateManager(vrp);
-        stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts, routingCosts, stateManager));
+        stateManager.addStateUpdater(new UpdateVariableCosts(activityCosts, routingCosts, softCosts, stateManager));
         stateManager.informInsertionStarts(Arrays.asList(route), Collections.<Job>emptyList());
     }
 
@@ -115,7 +118,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).build();
         PickupActivity pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, softCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         assertEquals(0., iCosts, 0.01);
@@ -126,7 +129,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
         PickupActivity pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, softCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         assertEquals(0., iCosts, 0.01);
@@ -140,7 +143,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         pickupService.setTheoreticalLatestOperationStartTime(5);
 
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, softCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         double expectedTransportCosts = 0.;
@@ -153,7 +156,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).setServiceTime(10.).setTimeWindow(TimeWindow.newInstance(5., 5.)).build();
         PickupActivity pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, softCosts, activityCosts, stateManager);
         estimator.setForwardLooking(3);
         double iCosts = estimator.getCosts(context, route.getStart(), route.getActivities().get(0), pickupService, 0.);
         double expectedTransportCosts = 0.;
@@ -166,7 +169,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).build();
         PickupActivity pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, softCosts, activityCosts, stateManager);
         estimator.setForwardLooking(0);
         double iCosts =
             estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
@@ -180,7 +183,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         Service s4 = Service.Builder.newInstance("s4").setLocation(Location.newInstance("5,0")).build();
         PickupActivity pickupService = new PickupService(s4);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, softCosts, activityCosts, stateManager);
         estimator.setForwardLooking(3);
         double iCosts =
             estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
@@ -196,7 +199,7 @@ public class TestRouteLevelActivityInsertionCostEstimator {
         pickupService.setTheoreticalEarliestOperationStartTime(5);
         pickupService.setTheoreticalLatestOperationStartTime(5);
         JobInsertionContext context = new JobInsertionContext(route, s4, route.getVehicle(), route.getDriver(), 0.);
-        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, activityCosts, stateManager);
+        RouteLevelActivityInsertionCostsEstimator estimator = new RouteLevelActivityInsertionCostsEstimator(routingCosts, softCosts, activityCosts, stateManager);
         estimator.setForwardLooking(3);
         double iCosts =
             estimator.getCosts(context, route.getActivities().get(0), route.getActivities().get(1), pickupService, 10.);
