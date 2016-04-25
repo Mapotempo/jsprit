@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.algorithm.state.*;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
@@ -298,6 +299,7 @@ public class SolutionAnalyser {
     private static class LastTransportUpdater implements StateUpdater, ActivityVisitor {
         private final StateManager stateManager;
         private final VehicleRoutingTransportCosts transportCost;
+        private SetupTime setupCosts = new SetupTime();
         private final TransportDistance distanceCalculator;
         private final StateId last_transport_distance_id;
         private final StateId last_transport_time_id;
@@ -339,12 +341,8 @@ public class SolutionAnalyser {
             double activity_transportCost = transportCost.getTransportCost(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
             double activity_arrTime = prevActDeparture + transportCost.getTransportTime(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
             double activity_softCost = softCosts.getSoftTimeWindowCost(activity, activity_arrTime, route.getVehicle());double setupCost = 0.0;
-            double activity_setupCost = 0.0;
+            double activity_setupCost = setupCosts.getSetupCost(prevAct, activity, route.getVehicle());
             double coef = 1.0;
-            if(route.getVehicle() != null)
-                coef = route.getVehicle().getCoefSetupTime();
-            if(!prevAct.getLocation().equals(activity.getLocation()))
-                activity_setupCost = activity.getSetupTime() * coef * route.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
             return activity_setupCost + activity_transportCost + activity_softCost;
         }
 

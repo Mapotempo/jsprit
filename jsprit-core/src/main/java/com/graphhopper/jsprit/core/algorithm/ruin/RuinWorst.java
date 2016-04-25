@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.ruin;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -44,6 +45,8 @@ public final class RuinWorst extends AbstractRuinStrategy {
     private Logger logger = LoggerFactory.getLogger(RuinWorst.class);
 
     private VehicleRoutingProblem vrp;
+    
+    private SetupTime setupCosts = new SetupTime();
 
     private StateManager stateManager;
 
@@ -150,12 +153,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
     }
 
     private double c(TourActivity from, TourActivity to, Vehicle vehicle) {
-    	double setupCost = 0.0;
-        double coef = 1.0;
-        if(vehicle != null)
-        	coef = vehicle.getCoefSetupTime();
-        if(!from.getLocation().equals(to.getLocation()))
-        	setupCost = to.getSetupTime() * coef * vehicle.getType().getVehicleCostParams().perSetupTimeUnit;
+        double setupCost = setupCosts.getSetupCost(from, to, vehicle);
         return setupCost + vrp.getTransportCosts().getTransportCost(from.getLocation(), to.getLocation(), from.getEndTime(), DriverImpl.noDriver(), vehicle);
     }
 

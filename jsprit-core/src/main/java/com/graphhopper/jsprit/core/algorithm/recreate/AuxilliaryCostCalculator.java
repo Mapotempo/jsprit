@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -37,6 +38,8 @@ final class AuxilliaryCostCalculator {
 
     private SoftTimeWindowCost softCosts;
 
+    private SetupTime setupCosts = new SetupTime();
+
     public AuxilliaryCostCalculator(final VehicleRoutingTransportCosts routingCosts, final SoftTimeWindowCost softCosts, final VehicleRoutingActivityCosts actCosts) {
         super();
         this.routingCosts = routingCosts;
@@ -55,9 +58,6 @@ final class AuxilliaryCostCalculator {
         if (path.isEmpty()) {
             return 0.0;
         }
-        double coef = 1.0;
-        if(vehicle != null)
-        	coef = vehicle.getCoefSetupTime();
         double cost = 0.0;
         Iterator<TourActivity> actIter = path.iterator();
         TourActivity prevAct = actIter.next();
@@ -71,10 +71,8 @@ final class AuxilliaryCostCalculator {
                     return cost;
                 }
             }
-            double setup_time_prevAct_act = 0.0;
-            if(!prevAct.getLocation().equals(act.getLocation()))
-            	setup_time_prevAct_act = act.getSetupTime() * coef;
-            double setupCost = setup_time_prevAct_act * vehicle.getType().getVehicleCostParams().perSetupTimeUnit;
+            double setup_time_prevAct_act = setupCosts.getSetupTime(prevAct, act, vehicle);
+            double setupCost = setupCosts.getSetupCost(setup_time_prevAct_act, vehicle);
             double transportCost = setupCost + routingCosts.getTransportCost(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             double transportTime = setup_time_prevAct_act + routingCosts.getTransportTime(prevAct.getLocation(), act.getLocation(), departureTimePrevAct, driver, vehicle);
             cost += transportCost;

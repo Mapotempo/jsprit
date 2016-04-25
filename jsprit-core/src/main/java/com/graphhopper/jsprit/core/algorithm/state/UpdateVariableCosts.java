@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.problem.cost.ForwardTransportCost;
 import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -40,6 +41,7 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
     private ForwardTransportCost transportCost;
 
     private SoftTimeWindowCost softCosts;
+    private SetupTime setupCosts = new SetupTime();
 
     private StateManager states;
 
@@ -92,13 +94,8 @@ public class UpdateVariableCosts implements ActivityVisitor, StateUpdater {
     public void visit(TourActivity act) {
         timeTracker.visit(act);
 
-        double setupCost = 0.0;
-        double coef = 1.0;
-        if(vehicleRoute.getVehicle() != null)
-        	coef = vehicleRoute.getVehicle().getCoefSetupTime();
-        if(!prevAct.getLocation().equals(act.getLocation()))
-        	setupCost = act.getSetupTime() * coef * vehicleRoute.getVehicle().getType().getVehicleCostParams().perSetupTimeUnit;
         double transportCost = this.transportCost.getTransportCost(prevAct.getLocation(), act.getLocation(), startTimeAtPrevAct, vehicleRoute.getDriver(), vehicleRoute.getVehicle());
+        double setupCost = setupCosts.getSetupCost(prevAct, act, vehicleRoute.getVehicle());
         double actCost = activityCost.getActivityCost(act, timeTracker.getActArrTime(), vehicleRoute.getDriver(), vehicleRoute.getVehicle());
         double softCost = softCosts.getSoftTimeWindowCost(act, timeTracker.getActArrTime(), vehicleRoute.getVehicle());
 
