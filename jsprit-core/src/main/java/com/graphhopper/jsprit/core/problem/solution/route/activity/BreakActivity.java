@@ -29,6 +29,8 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 
     public double arrTime;
 
+    public double readyTime;
+
     public double endTime;
 
     public double setup = 0.0;
@@ -237,6 +239,16 @@ public class BreakActivity extends AbstractActivity implements TourActivity.JobA
 	public double getSetupTime() {
 		return setup;
 	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
+    }
 
 
 }

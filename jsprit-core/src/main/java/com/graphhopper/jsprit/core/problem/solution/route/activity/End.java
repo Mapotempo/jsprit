@@ -43,6 +43,8 @@ public final class End extends AbstractActivity implements TourActivity {
 
     private double arrTime;
 
+    public double readyTime;
+
     private Location location;
 
     private double setup = 0;
@@ -175,5 +177,15 @@ public final class End extends AbstractActivity implements TourActivity {
 	public double getSetupTime() {
 		return setup;
 	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
+    }
 
 }

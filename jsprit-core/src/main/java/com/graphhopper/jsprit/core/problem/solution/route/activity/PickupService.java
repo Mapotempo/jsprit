@@ -29,6 +29,8 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 
     private double arrTime;
 
+    public double readyTime;
+
     private double depTime;
 
     private double theoreticalEarliest = 0;
@@ -177,5 +179,15 @@ public final class PickupService extends AbstractActivity implements PickupActiv
 	public double getSetupTime() {
 		return setup;
 	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
+    }
 
 }

@@ -31,6 +31,8 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 
     private double arrTime;
 
+    public double readyTime;
+
     private Capacity capacity;
 
     private double earliest = 0;
@@ -174,4 +176,14 @@ public final class DeliverShipment extends AbstractActivity implements DeliveryA
 	public double getSoftUpperBoundOperationStartTime() {
         return softLatest;
 	}
+
+    @Override
+    public double getReadyTime() {
+        return readyTime;
+    }
+
+    @Override
+    public void setReadyTime(double readyTime) {
+        this.readyTime = readyTime;
+    }
 }
