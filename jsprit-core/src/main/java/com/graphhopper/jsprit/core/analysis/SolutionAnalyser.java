@@ -280,21 +280,20 @@ public class SolutionAnalyser {
             double waitAtAct = 0.;
             double tooLate = 0.;
             double setupTime = setupCosts.getSetupTime(prevAct, activity, route.getVehicle());
-            double actReadyTime = activity.getArrTime() + setupTime;
             if (activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-                waitAtAct = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - actReadyTime);
-                tooLate = Math.max(0, actReadyTime - activity.getTheoreticalLatestOperationStartTime());
+                waitAtAct = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - activity.getReadyTime());
+                tooLate = Math.max(0, activity.getReadyTime() - activity.getTheoreticalLatestOperationStartTime());
             }
             sum_waiting_time += waitAtAct;
             sum_too_late += tooLate;
             //transport time
-            double transportTime = activity.getArrTime() - setupTime - prevActDeparture;
+            double transportTime = activity.getArrTime() - prevActDeparture;
 
             sum_setup_time += setupTime;
             sum_transport_time += transportTime;
             prevActDeparture = activity.getEndTime();
             //service time
-            sum_service_time += activityCosts.getActivityDuration(activity, actReadyTime, route.getDriver(), route.getVehicle());
+            sum_service_time += activityCosts.getActivityDuration(activity, activity.getReadyTime(), route.getDriver(), route.getVehicle());
 
             stateManager.putActivityState(activity, transport_time_id, sum_transport_time);
             prevAct = activity;
@@ -303,7 +302,7 @@ public class SolutionAnalyser {
         @Override
         public void finish() {
             sum_transport_time += route.getEnd().getArrTime() - prevActDeparture;
-            sum_too_late += Math.max(0, route.getEnd().getArrTime() - route.getEnd().getTheoreticalLatestOperationStartTime());
+            sum_too_late += Math.max(0, route.getEnd().getReadyTime() - route.getEnd().getTheoreticalLatestOperationStartTime());
             stateManager.putRouteState(route, transport_time_id, sum_transport_time);
             stateManager.putRouteState(route, waiting_time_id, sum_waiting_time);
             stateManager.putRouteState(route, service_time_id, sum_service_time);
@@ -315,7 +314,6 @@ public class SolutionAnalyser {
     private static class LastTransportUpdater implements StateUpdater, ActivityVisitor {
         private final StateManager stateManager;
         private final VehicleRoutingTransportCosts transportCost;
-        private SetupTime setupCosts = new SetupTime();
         private final TransportDistance distanceCalculator;
         private final StateId last_transport_distance_id;
         private final StateId last_transport_time_id;
@@ -324,7 +322,7 @@ public class SolutionAnalyser {
         private double prevActDeparture;
         private VehicleRoute route;
         private SoftTimeWindowCost softCosts;
-
+        private SetupTime setupCosts = new SetupTime();
 
         private LastTransportUpdater(StateManager stateManager, VehicleRoutingTransportCosts transportCost, SoftTimeWindowCost softCosts, TransportDistance distanceCalculator, StateId last_distance_id, StateId last_time_id, StateId last_cost_id) {
             this.stateManager = stateManager;
@@ -358,13 +356,11 @@ public class SolutionAnalyser {
             double activity_arrTime = prevActDeparture + transportCost.getTransportTime(prevAct.getLocation(), activity.getLocation(), prevActDeparture, route.getDriver(), route.getVehicle());
             double activity_softCost = softCosts.getSoftTimeWindowCost(activity, activity_arrTime, route.getVehicle());double setupCost = 0.0;
             double activity_setupCost = setupCosts.getSetupCost(prevAct, activity, route.getVehicle());
-            double coef = 1.0;
             return activity_setupCost + activity_transportCost + activity_softCost;
         }
 
         private double transportTime(TourActivity activity) {
-            double setupTime = setupCosts.getSetupTime(prevAct,  activity, route.getVehicle());
-            return activity.getArrTime() - setupTime - prevActDeparture;
+            return activity.getArrTime() - prevActDeparture;
         }
 
         private double distance(TourActivity activity) {
@@ -823,7 +819,7 @@ public class SolutionAnalyser {
     public Double getTimeWindowViolationAtActivity(TourActivity activity, VehicleRoute route) {
         if (route == null) throw new IllegalArgumentException("route is missing.");
         if (activity == null) throw new IllegalArgumentException("activity is missing.");
-        return Math.max(0, activity.getArrTime() - activity.getTheoreticalLatestOperationStartTime());
+        return Math.max(0, activity.getReadyTime() - activity.getTheoreticalLatestOperationStartTime());
     }
 
     /**
@@ -1053,7 +1049,7 @@ public class SolutionAnalyser {
         if (activity == null) throw new IllegalArgumentException("activity is missing.");
         double waitingTime = 0.;
         if (activityPolicy.equals(ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS)) {
-            waitingTime = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - activity.getArrTime());
+            waitingTime = Math.max(0, activity.getTheoreticalEarliestOperationStartTime() - activity.getReadyTime());
         }
         return waitingTime;
     }

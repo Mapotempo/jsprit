@@ -24,7 +24,7 @@ package com.graphhopper.jsprit.core.problem.solution.route.activity;
 public class ActivityStartAsSoonAsArrived implements ActivityStartStrategy {
 
     @Override
-    public double getActivityStartTime(TourActivity activity, double arrivalTime) {
-        return arrivalTime;
+    public double getActivityStartTime(TourActivity activity, double readyTime) {
+        return readyTime;
     }
 }

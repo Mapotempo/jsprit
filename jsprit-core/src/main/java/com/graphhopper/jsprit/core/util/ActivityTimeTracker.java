@@ -122,6 +122,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
         double arrivalTimeAtCurrAct = startAtPrevAct + transportTime;
 
         actArrTime = arrivalTimeAtCurrAct;
+        actReadyTime = arrivalTimeAtCurrAct;
         actEndTime = arrivalTimeAtCurrAct;
 
         beginFirst = false;
