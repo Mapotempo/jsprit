@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
 import com.graphhopper.jsprit.core.problem.cost.SoftTimeWindowCost;
+import com.graphhopper.jsprit.core.problem.cost.SetupTime;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
@@ -37,6 +38,8 @@ class AdditionalAccessEgressCalculator {
     private VehicleRoutingTransportCosts routingCosts;
 
     private SoftTimeWindowCost softCosts;
+
+    private SetupTime setupCosts = new SetupTime();
 
     /**
      * Constructs the estimator that estimates additional access/egress costs when operating route with a new vehicle that has different start/end-location.
@@ -61,8 +64,10 @@ class AdditionalAccessEgressCalculator {
             double newArrTime = newVehicleDepartureTime+routingCosts.getBackwardTransportTime(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
             double accessTransportCostNew = softCosts.getSoftTimeWindowCost(currentRoute.getActivities().get(0),newArrTime,newVehicle) + routingCosts.getTransportCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0).getLocation(), newVehicleDepartureTime, newDriver, newVehicle);
             double accessTransportCostOld = softCosts.getSoftTimeWindowCost(currentRoute.getActivities().get(0), currentRoute.getActivities().get(0).getArrTime(), currentRoute.getVehicle()) + routingCosts.getTransportCost(currentRoute.getStart().getLocation(), currentRoute.getActivities().get(0).getLocation(), currentRoute.getDepartureTime(), currentRoute.getDriver(), currentRoute.getVehicle());
-
-            delta_access = accessTransportCostNew - accessTransportCostOld;
+            double accessSetupCostNew = setupCosts.getSetupCost(newVehicle.getStartLocation(), currentRoute.getActivities().get(0), newVehicle);
+            double accessSetupCostold = setupCosts.getSetupCost(currentRoute.getStart(), currentRoute.getActivities().get(0), currentRoute.getVehicle());
+            
+            delta_access = accessTransportCostNew + accessSetupCostNew - accessTransportCostOld - accessSetupCostold;
 
             if (newVehicle.isReturnToDepot()) {
                 TourActivity lastActivityBeforeEndOfRoute = currentRoute.getActivities().get(currentRoute.getActivities().size() - 1);

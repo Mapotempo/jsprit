@@ -45,7 +45,7 @@ public final class RuinWorst extends AbstractRuinStrategy {
     private Logger logger = LoggerFactory.getLogger(RuinWorst.class);
 
     private VehicleRoutingProblem vrp;
-    
+
     private SetupTime setupCosts = new SetupTime();
 
     private StateManager stateManager;
