@@ -66,7 +66,6 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
     public double getCosts(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double depTimeAtPrevAct) {
 
         double setup_time_prevAct_newAct = setupCosts.getSetupTime(prevAct, newAct, iFacts.getNewVehicle());
-        double setup_cost_prevAct_newAct = setupCosts.getSetupCost(setup_time_prevAct_newAct, iFacts.getNewVehicle());
         double tp_costs_prevAct_newAct = routingCosts.getTransportCost(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
         double tp_time_prevAct_newAct = routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
 
@@ -82,18 +81,16 @@ class AdditionalTransportationCosts implements SoftActivityConstraint {
         }
 
         double tp_costs_newAct_nextAct = routingCosts.getTransportCost(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double setup_cost_newAct_nextAct = setupCosts.getSetupCost(newAct, nextAct, iFacts.getNewVehicle());
         double soft_cost_newAct = softCosts.getSoftTimeWindowCost(iFacts.getRoute(), prevAct, newAct, nextAct, depTimeAtPrevAct);
-        double totalCosts = tp_costs_prevAct_newAct + setup_cost_prevAct_newAct + tp_costs_newAct_nextAct + setup_cost_newAct_nextAct + soft_cost_newAct + setup_cost_newAct_nextAct;
+        double totalCosts = tp_costs_prevAct_newAct + tp_costs_newAct_nextAct + soft_cost_newAct;
 
         double oldCosts;
         if (iFacts.getRoute().isEmpty()) {
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), depTimeAtPrevAct, iFacts.getNewDriver(), iFacts.getNewVehicle());
             oldCosts = tp_costs_prevAct_nextAct;
         } else {
-            double setup_costs_prevAct_nextAct = setupCosts.getSetupCost(prevAct, nextAct, iFacts.getNewVehicle());
             double tp_costs_prevAct_nextAct = routingCosts.getTransportCost(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
-            oldCosts = tp_costs_prevAct_nextAct + setup_costs_prevAct_nextAct;
+            oldCosts = tp_costs_prevAct_nextAct;
         }
 
         double additionalCosts = totalCosts - oldCosts;
