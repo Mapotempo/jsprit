@@ -208,9 +208,12 @@ public class VrpXMLReader {
                 String type = actConfig.getString("[@type]");
                 if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
                 double arrTime = 0.;
+                double readyTime = 0.;
                 double endTime = 0.;
                 String arrTimeS = actConfig.getString("arrTime");
                 if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
+                String readyTimeS = actConfig.getString("readyTime");
+                if (readyTimeS != null) readyTime = Double.parseDouble(readyTimeS);
                 String endTimeS = actConfig.getString("endTime");
                 if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
 
@@ -280,8 +283,11 @@ public class VrpXMLReader {
                     if (type == null) throw new IllegalArgumentException("act[@type] is missing.");
                     double arrTime = 0.;
                     double endTime = 0.;
+                    double readyTime = 0.;
                     String arrTimeS = actConfig.getString("arrTime");
                     if (arrTimeS != null) arrTime = Double.parseDouble(arrTimeS);
+                    String readyTimeS = actConfig.getString("readyTime");
+                    if (readyTimeS != null) readyTime = Double.parseDouble(readyTimeS);
                     String endTimeS = actConfig.getString("endTime");
                     if (endTimeS != null) endTime = Double.parseDouble(endTimeS);
                     if(type.equals("break")) {

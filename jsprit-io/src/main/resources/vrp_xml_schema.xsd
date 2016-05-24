@@ -376,6 +376,7 @@
         <xs:sequence>
             <xs:element name="serviceId" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="readyTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:group>
@@ -384,6 +385,7 @@
         <xs:sequence>
             <xs:element name="shipmentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="arrTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="readyTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
             <xs:element name="endTime" type="xs:double" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:group>
