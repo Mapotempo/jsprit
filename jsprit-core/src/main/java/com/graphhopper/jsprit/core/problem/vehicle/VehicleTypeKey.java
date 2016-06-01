@@ -43,8 +43,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public List<Skills> alternativeSkills = new ArrayList<Skills>();
     public final boolean returnToDepot;
     public final Capacity initCapa;
+    public final double maximumRouteDuration;
 
-    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, List<Skills> alternativeSkills, boolean returnToDepot, Capacity initCapa) {
+    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, List<Skills> alternativeSkills, boolean returnToDepot, Capacity initCapa, double maximumRouteDuration) {
         super();
         this.type = typeId;
         this.startLocation = startLocation;
@@ -55,6 +56,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.alternativeSkills = alternativeSkills;
         this.returnToDepot = returnToDepot;
         this.initCapa = initCapa;
+        this.maximumRouteDuration = maximumRouteDuration;
     }
 
     @Override
@@ -72,6 +74,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (startLocation != null && that.endLocation != null && !startLocation.getId().equals(that.startLocation.getId())) return false;
         if (!alternativeSkills.equals(that.alternativeSkills)) return false;
         if (!type.equals(that.type)) return false;
+        if (Double.compare(that.maximumRouteDuration, maximumRouteDuration) != 0) return false;
 
         return true;
     }
@@ -93,6 +96,8 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if(alternativeSkills != null)
             result = 31 * result + alternativeSkills.hashCode();
         result = 31 * result + (returnToDepot ? 1 : 0);
+        temp = Double.doubleToLongBits(maximumRouteDuration);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
@@ -104,7 +109,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
             stringBuilder.append("_").append(startLocation.getId());
         if(endLocation != null)
             stringBuilder.append("_").append(endLocation.getId());
-        stringBuilder.append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd));
+        stringBuilder.append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd)).append("_").append(maximumRouteDuration);
         return stringBuilder.toString();
     }
 

@@ -83,4 +83,6 @@ public interface Vehicle extends HasId, HasIndex {
     public abstract Capacity getInitialCapacity();
 
     public abstract double getCoefSetupTime();
+
+    public abstract double getMaximumRouteDuration();
 }
