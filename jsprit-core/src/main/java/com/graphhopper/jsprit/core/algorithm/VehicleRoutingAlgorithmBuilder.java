@@ -159,6 +159,7 @@ public class VehicleRoutingAlgorithmBuilder {
 
         if (addCoreConstraints) {
             constraintManager.addLoadConstraint();
+            constraintManager.addRouteDurationConstraint();
             constraintManager.addTimeWindowConstraint();
             constraintManager.addSkillsConstraint();
             stateManager.updateLoadStates();

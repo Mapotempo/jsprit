@@ -59,6 +59,8 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
 
     private boolean skillconstraintSet = false;
 
+    private boolean routeDurationConstraintsSet = false;
+
     public ConstraintManager(VehicleRoutingProblem vrp, RouteAndActivityStateGetter stateManager) {
         this.vrp = vrp;
         this.stateManager = stateManager;
@@ -103,6 +105,12 @@ public class ConstraintManager implements HardActivityConstraint, HardRouteConst
         }
     }
 
+    public void addRouteDurationConstraint() {
+        if (!routeDurationConstraintsSet) {
+            addConstraint(new VehicleRouteDurationConstraints(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts()), Priority.HIGH);
+            routeDurationConstraintsSet = true;
+        }
+    }
 
     public void addLoadConstraint() {
         if (!loadConstraintsSet) {

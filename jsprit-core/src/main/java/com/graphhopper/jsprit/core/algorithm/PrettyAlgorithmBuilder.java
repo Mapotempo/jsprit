@@ -88,6 +88,7 @@ public class PrettyAlgorithmBuilder {
     public VehicleRoutingAlgorithm build() {
         if (coreStuff) {
             constraintManager.addTimeWindowConstraint();
+            constraintManager.addRouteDurationConstraint();
             constraintManager.addLoadConstraint();
             constraintManager.addSkillsConstraint();
             constraintManager.addConstraint(new SwitchNotFeasible(stateManager));

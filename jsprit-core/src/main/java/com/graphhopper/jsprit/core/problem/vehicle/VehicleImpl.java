@@ -99,6 +99,11 @@ public class VehicleImpl extends AbstractVehicle {
 			return 0;
 		}
 
+        @Override
+        public double getMaximumRouteDuration() {
+            return 0;
+        }
+
     }
 
     /**
@@ -135,6 +140,8 @@ public class VehicleImpl extends AbstractVehicle {
         private Break aBreak;
         
         private double coefSetupTime = 1.0;
+
+        private double maximumRouteDuration = Double.MAX_VALUE;
 
         private Builder(String id) {
             super();
@@ -276,6 +283,13 @@ public class VehicleImpl extends AbstractVehicle {
         	this.coefSetupTime = coefSetupTime;
         	return this;
         }
+
+        public Builder setMaximumRouteDuration(double maximumRouteDuration) {
+            if (maximumRouteDuration < 0)
+                throw new IllegalArgumentException("maximum route duration of vehicle " + id + " must not be negative");
+            this.maximumRouteDuration = maximumRouteDuration;
+            return this;
+        }
     }
 
     /**
@@ -305,6 +319,8 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Location startLocation;
 
+    private final double maximumRouteDuration;
+
     private final Break aBreak;
     
     private final double coefSetupTime;
@@ -320,8 +336,9 @@ public class VehicleImpl extends AbstractVehicle {
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
         coefSetupTime = builder.coefSetupTime;
+        maximumRouteDuration = builder.maximumRouteDuration;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot));
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot, maximumRouteDuration));
     }
 
     /**
@@ -388,6 +405,11 @@ public class VehicleImpl extends AbstractVehicle {
 	public double getCoefSetupTime() {
 		return coefSetupTime;
 	}
+
+    @Override
+    public double getMaximumRouteDuration() {
+        return maximumRouteDuration;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
