@@ -43,7 +43,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public List<Skills> alternativeSkills = new ArrayList<Skills>();
     public final boolean returnToDepot;
     public final Capacity initCapa;
-    public final double maximumRouteDuration;
+    public Double maximumRouteDuration = null;
 
     public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, List<Skills> alternativeSkills, boolean returnToDepot, Capacity initCapa, double maximumRouteDuration) {
         super();
@@ -74,7 +74,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (startLocation != null && that.endLocation != null && !startLocation.getId().equals(that.startLocation.getId())) return false;
         if (!alternativeSkills.equals(that.alternativeSkills)) return false;
         if (!type.equals(that.type)) return false;
-        if (Double.compare(that.maximumRouteDuration, maximumRouteDuration) != 0) return false;
+        if (that.maximumRouteDuration == null ^ maximumRouteDuration == null) return false;
+        if (that.maximumRouteDuration != null && maximumRouteDuration != null
+                && Double.compare(that.maximumRouteDuration, maximumRouteDuration) != 0) return false;
 
         return true;
     }
@@ -96,7 +98,10 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if(alternativeSkills != null)
             result = 31 * result + alternativeSkills.hashCode();
         result = 31 * result + (returnToDepot ? 1 : 0);
-        temp = Double.doubleToLongBits(maximumRouteDuration);
+        if(maximumRouteDuration != null)
+            temp = Double.doubleToLongBits(maximumRouteDuration);
+        else
+            temp = Double.doubleToLongBits(Double.MAX_VALUE);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
@@ -110,6 +115,8 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if(endLocation != null)
             stringBuilder.append("_").append(endLocation.getId());
         stringBuilder.append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd)).append("_").append(maximumRouteDuration);
+            if(maximumRouteDuration != null)
+                stringBuilder.append("_").append(maximumRouteDuration);
         return stringBuilder.toString();
     }
 
