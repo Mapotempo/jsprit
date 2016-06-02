@@ -86,5 +86,5 @@ public interface Vehicle extends HasId, HasIndex {
     
     public abstract Capacity getInitialCapacity();
 
-    public abstract double getMaximumRouteDuration();
+    public abstract Double getMaximumRouteDuration();
 }
