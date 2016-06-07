@@ -9,6 +9,8 @@ public class SetupTime {
 	public SetupTime(){}
 	
 	public double getSetupTime(TourActivity from, TourActivity to, Vehicle vehicle){
+        if(from.getLocation() == null || to.getLocation() == null)
+            return 0.0;
         double coef = 0.;
         double setupTime = 0.;
         if(vehicle != null)
@@ -19,6 +21,8 @@ public class SetupTime {
 	}
 	
 	public double getSetupTime(Location from, Location to, double defaultSetupTime, Vehicle vehicle) {
+	    if(from == null || to == null)
+	        return 0.0;
         double setupTime = 0.;
         double coef = 0.;
         if(vehicle != null)
@@ -29,6 +33,8 @@ public class SetupTime {
 	}
 	
     public double getSetupTime(TourActivity to, Vehicle vehicle) {
+        if(to == null)
+            return 0.0;
         double coef = 0.;
         if(vehicle != null)
             coef = vehicle.getCoefSetupTime();
@@ -44,13 +50,16 @@ public class SetupTime {
     }
 
     public double getSetupCost(Location from, TourActivity to, Vehicle vehicle) {
+        if(from == null || to == null)
+            return 0.0;
         double setupTime = 0.;
         double coef = 0.;
         if(vehicle != null)
             coef = vehicle.getCoefSetupTime();
         if(!from.equals(to.getLocation()))
             setupTime = to.getSetupTime() * coef;
-        return setupTime;
+        double setupCost = getSetupCost(setupTime, vehicle);
+        return setupCost;
     }
     
 }
