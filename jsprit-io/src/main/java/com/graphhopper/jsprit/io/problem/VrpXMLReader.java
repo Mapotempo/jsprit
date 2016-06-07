@@ -645,61 +645,65 @@ public class VrpXMLReader {
             if (type == null) throw new IllegalArgumentException("vehicleType with typeId " + typeId + " is missing.");
             builder.setType(type);
 
-            //read startlocation
-            Location.Builder startLocationBuilder = Location.Builder.newInstance();
-            String locationId = vehicleConfig.getString("location.id");
-            if (locationId == null) {
-                locationId = vehicleConfig.getString("startLocation.id");
-            }
-            startLocationBuilder.setId(locationId);
-            String coordX = vehicleConfig.getString("location.coord[@x]");
-            String coordY = vehicleConfig.getString("location.coord[@y]");
-            if (coordX == null || coordY == null) {
-                coordX = vehicleConfig.getString("startLocation.coord[@x]");
-                coordY = vehicleConfig.getString("startLocation.coord[@y]");
-            }
-            if (coordX == null || coordY == null) {
-                if (!doNotWarnAgain) {
-                    logger.debug("location.coord is missing. will not warn you again.");
-                    doNotWarnAgain = true;
+            if(vehicleConfig.getString("startLocation.index") != null || vehicleConfig.getString("startLocation.id") != null || vehicleConfig.getString("startLocation.coord[@x]") != null) {
+                //read startlocation
+                Location.Builder startLocationBuilder = Location.Builder.newInstance();
+                String locationId = vehicleConfig.getString("location.id");
+                if (locationId == null) {
+                    locationId = vehicleConfig.getString("startLocation.id");
                 }
-            } else {
-                Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(coordX), Double.parseDouble(coordY));
-                startLocationBuilder.setCoordinate(coordinate);
+                startLocationBuilder.setId(locationId);
+                String coordX = vehicleConfig.getString("location.coord[@x]");
+                String coordY = vehicleConfig.getString("location.coord[@y]");
+                if (coordX == null || coordY == null) {
+                    coordX = vehicleConfig.getString("startLocation.coord[@x]");
+                    coordY = vehicleConfig.getString("startLocation.coord[@y]");
+                }
+                if (coordX == null || coordY == null) {
+                    if (!doNotWarnAgain) {
+                        logger.debug("location.coord is missing. will not warn you again.");
+                        doNotWarnAgain = true;
+                    }
+                } else {
+                    Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(coordX), Double.parseDouble(coordY));
+                    startLocationBuilder.setCoordinate(coordinate);
+                }
+                String index = vehicleConfig.getString("startLocation.index");
+                if (index == null) index = vehicleConfig.getString("location.index");
+                if (index != null) {
+                    startLocationBuilder.setIndex(Integer.parseInt(index));
+                }
+                builder.setStartLocation(startLocationBuilder.build());
             }
-            String index = vehicleConfig.getString("startLocation.index");
-            if (index == null) index = vehicleConfig.getString("location.index");
-            if (index != null) {
-                startLocationBuilder.setIndex(Integer.parseInt(index));
-            }
-            builder.setStartLocation(startLocationBuilder.build());
 
             //read endlocation
-            Location.Builder endLocationBuilder = Location.Builder.newInstance();
-            boolean hasEndLocation = false;
-            String endLocationId = vehicleConfig.getString("endLocation.id");
-            if (endLocationId != null) {
-                hasEndLocation = true;
-                endLocationBuilder.setId(endLocationId);
-            }
-            String endCoordX = vehicleConfig.getString("endLocation.coord[@x]");
-            String endCoordY = vehicleConfig.getString("endLocation.coord[@y]");
-            if (endCoordX == null || endCoordY == null) {
-                if (!doNotWarnAgain) {
-                    logger.debug("endLocation.coord is missing. will not warn you again.");
-                    doNotWarnAgain = true;
+            if(vehicleConfig.getString("endLocation.index") != null || vehicleConfig.getString("endLocation.id") != null || vehicleConfig.getString("endLocation.coord[@x]") != null) {
+                Location.Builder endLocationBuilder = Location.Builder.newInstance();
+                boolean hasEndLocation = false;
+                String endLocationId = vehicleConfig.getString("endLocation.id");
+                if (endLocationId != null) {
+                    hasEndLocation = true;
+                    endLocationBuilder.setId(endLocationId);
                 }
-            } else {
-                Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(endCoordX), Double.parseDouble(endCoordY));
-                hasEndLocation = true;
-                endLocationBuilder.setCoordinate(coordinate);
+                String endCoordX = vehicleConfig.getString("endLocation.coord[@x]");
+                String endCoordY = vehicleConfig.getString("endLocation.coord[@y]");
+                if (endCoordX == null || endCoordY == null) {
+                    if (!doNotWarnAgain) {
+                        logger.debug("endLocation.coord is missing. will not warn you again.");
+                        doNotWarnAgain = true;
+                    }
+                } else {
+                    Coordinate coordinate = Coordinate.newInstance(Double.parseDouble(endCoordX), Double.parseDouble(endCoordY));
+                    hasEndLocation = true;
+                    endLocationBuilder.setCoordinate(coordinate);
+                }
+                String endLocationIndex = vehicleConfig.getString("endLocation.index");
+                if (endLocationIndex != null) {
+                    hasEndLocation = true;
+                    endLocationBuilder.setIndex(Integer.parseInt(endLocationIndex));
+                }
+                if (hasEndLocation) builder.setEndLocation(endLocationBuilder.build());
             }
-            String endLocationIndex = vehicleConfig.getString("endLocation.index");
-            if (endLocationIndex != null) {
-                hasEndLocation = true;
-                endLocationBuilder.setIndex(Integer.parseInt(endLocationIndex));
-            }
-            if (hasEndLocation) builder.setEndLocation(endLocationBuilder.build());
 
             //read timeSchedule
             String start = vehicleConfig.getString("timeSchedule.start");
