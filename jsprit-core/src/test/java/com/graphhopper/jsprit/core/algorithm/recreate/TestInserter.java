@@ -198,8 +198,8 @@ public class TestInserter {
         Shipment shipment = mock(Shipment.class);
         Capacity capacity = Capacity.Builder.newInstance().build();
         when(shipment.getSize()).thenReturn(capacity);
-        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocation(Location.newInstance("vehLoc")).setType(mock(VehicleType.class)).build();
-        Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocation(Location.newInstance("newVehLoc")).setType(mock(VehicleType.class)).build();
+        Vehicle vehicle = VehicleImpl.Builder.newInstance("vehId").setStartLocation(Location.newInstance("vehLoc")).setReturnToDepot(true).setType(mock(VehicleType.class)).build();
+        Vehicle newVehicle = VehicleImpl.Builder.newInstance("newVehId").setStartLocation(Location.newInstance("newVehLoc")).setReturnToDepot(true).setType(mock(VehicleType.class)).build();
 
         when(shipment.getPickupTimeWindow()).thenReturn(mock(TimeWindow.class));
         when(shipment.getDeliveryTimeWindow()).thenReturn(mock(TimeWindow.class));

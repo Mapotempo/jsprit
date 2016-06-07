@@ -64,6 +64,8 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 
     @Override
     public double getTransportCost(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
+        if(from == null || to == null)
+            return 0.0;
         double distance;
         try {
             distance = calculateDistance(from, to);
@@ -92,11 +94,15 @@ public class GreatCircleCosts extends AbstractForwardVehicleRoutingTransportCost
 
     @Override
     public double getTransportTime(Location from, Location to, double time, Driver driver, Vehicle vehicle) {
+        if(from == null || to == null)
+            return 0.0;
         return calculateDistance(from, to) / speed;
     }
 
     @Override
     public double getDistance(Location from, Location to, double departureTime, Vehicle vehicle) {
+        if(from == null || to == null)
+            return 0.0;
         return calculateDistance(from, to);
     }
 }

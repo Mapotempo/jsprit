@@ -104,6 +104,8 @@ public class ShipmentInsertionCalculatorTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 2).setCostPerDistance(1).build();
         vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();
         activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, softCosts, activityCosts, mock(StateManager.class));
+        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true).setType(type).build();
+        activityInsertionCostsCalculator = new LocalActivityInsertionCostsCalculator(routingCosts, softCosts, activityCosts, mock(StateManager.class));
         createInsertionCalculator(hardRouteLevelConstraint);
         vehicleRoutingProblem = mock(VehicleRoutingProblem.class);
     }

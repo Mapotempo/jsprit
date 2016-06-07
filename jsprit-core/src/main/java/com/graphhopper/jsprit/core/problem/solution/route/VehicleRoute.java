@@ -297,10 +297,11 @@ public class VehicleRoute {
             if (!openShipments.isEmpty()) {
                 throw new IllegalArgumentException("there are still shipments that have not been delivered yet.");
             }
-            if (!vehicle.isReturnToDepot()) {
-                if (!tourActivities.isEmpty()) {
+            if(vehicle.getEndLocation() == null) {
+                if(vehicle.isReturnToDepot())
+                    end.setLocation(vehicle.getStartLocation());
+                else if (!tourActivities.isEmpty())
                     end.setLocation(tourActivities.getActivities().get(tourActivities.getActivities().size() - 1).getLocation());
-                }
             }
             return new VehicleRoute(this);
         }
