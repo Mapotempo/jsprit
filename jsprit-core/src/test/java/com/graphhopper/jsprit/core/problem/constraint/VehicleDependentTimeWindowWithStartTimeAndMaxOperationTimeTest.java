@@ -69,19 +69,19 @@ public class VehicleDependentTimeWindowWithStartTimeAndMaxOperationTimeTest {
         vrpBuilder.setRoutingCost(routingCosts);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-        vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("0,0"))
+        vehicle = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true)
             .setEarliestStart(0.).setLatestArrival(100.).build();
 
-        v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance("0,0"))
+        v2 = VehicleImpl.Builder.newInstance("v2").setType(type).setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true)
             .setEarliestStart(0.).setLatestArrival(60.).build();
 
-        v3 = VehicleImpl.Builder.newInstance("v3").setType(type).setStartLocation(Location.newInstance("0,0"))
+        v3 = VehicleImpl.Builder.newInstance("v3").setType(type).setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true)
             .setEarliestStart(0.).setLatestArrival(50.).build();
 
-        v4 = VehicleImpl.Builder.newInstance("v4").setType(type).setStartLocation(Location.newInstance("0,0"))
+        v4 = VehicleImpl.Builder.newInstance("v4").setType(type).setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true)
             .setEarliestStart(0.).setLatestArrival(10.).build();
 
-        v5 = VehicleImpl.Builder.newInstance("v5").setType(type).setStartLocation(Location.newInstance("0,0"))
+        v5 = VehicleImpl.Builder.newInstance("v5").setType(type).setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true)
             .setEarliestStart(60.).setLatestArrival(100.).build();
 
         v6 = VehicleImpl.Builder.newInstance("v6").setType(type).setStartLocation(Location.newInstance("0,0"))

@@ -19,6 +19,7 @@
 package com.graphhopper.jsprit.core.problem.vehicle;
 
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
+import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 
 /**
@@ -31,19 +32,19 @@ import com.graphhopper.jsprit.core.problem.Skills;
 public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
 
     public final String type;
-    public final String startLocationId;
-    public final String endLocationId;
+    public final Location startLocation;
+    public final Location endLocation;
     public final double earliestStart;
     public final double latestEnd;
     public final Skills skills;
     public final boolean returnToDepot;
     public Double maximumRouteDuration = null;
 
-    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Double maximumRouteDuration) {
+    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Double maximumRouteDuration) {
         super();
         this.type = typeId;
-        this.startLocationId = startLocationId;
-        this.endLocationId = endLocationId;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
         this.earliestStart = earliestStart;
         this.latestEnd = latestEnd;
         this.skills = skills;
@@ -61,9 +62,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (Double.compare(that.earliestStart, earliestStart) != 0) return false;
         if (Double.compare(that.latestEnd, latestEnd) != 0) return false;
         if (returnToDepot != that.returnToDepot) return false;
-        if (!endLocationId.equals(that.endLocationId)) return false;
+        if (endLocation != null && that.endLocation != null && !endLocation.getId().equals(that.endLocation.getId())) return false;
         if (!skills.equals(that.skills)) return false;
-        if (!startLocationId.equals(that.startLocationId)) return false;
+        if (startLocation != null && that.endLocation != null && !startLocation.getId().equals(that.startLocation.getId())) return false;
         if (!type.equals(that.type)) return false;
         if (that.maximumRouteDuration == null ^ maximumRouteDuration == null) return false;
         if (that.maximumRouteDuration != null && maximumRouteDuration != null
@@ -77,8 +78,10 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         int result;
         long temp;
         result = type.hashCode();
-        result = 31 * result + startLocationId.hashCode();
-        result = 31 * result + endLocationId.hashCode();
+        if(startLocation != null)
+        result = 31 * result + startLocation.getId().hashCode();
+        if(endLocation != null)
+        result = 31 * result + endLocation.getId().hashCode();
         temp = Double.doubleToLongBits(earliestStart);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(latestEnd);
@@ -96,10 +99,14 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(type).append("_").append(startLocationId).append("_").append(endLocationId)
-            .append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd));
-            if(maximumRouteDuration != null)
-                stringBuilder.append("_").append(maximumRouteDuration);
+        stringBuilder.append(type);
+        if(startLocation != null)
+            stringBuilder.append("_").append(startLocation.getId());
+        if(endLocation != null)
+            stringBuilder.append("_").append(endLocation.getId());
+        stringBuilder.append("_").append(Double.toString(earliestStart)).append("_").append(Double.toString(latestEnd));
+        if(maximumRouteDuration != null)
+            stringBuilder.append("_").append(maximumRouteDuration);
         return stringBuilder.toString();
     }
 

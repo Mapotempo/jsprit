@@ -22,7 +22,6 @@
                 <start>14400.0</start>
                 <end>46800.0</end>
             </timeSchedule>
-            <returnToDepot>true</returnToDepot>
         </vehicle>
         <vehicle>
             <id>19</id>
@@ -39,7 +38,6 @@
                 <start>39600.0</start>
                 <end>64800.0</end>
             </timeSchedule>
-            <returnToDepot>true</returnToDepot>
         </vehicle>
     </vehicles>
     <vehicleTypes>

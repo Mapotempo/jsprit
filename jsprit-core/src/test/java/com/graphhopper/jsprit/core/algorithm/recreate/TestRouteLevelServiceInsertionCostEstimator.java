@@ -97,7 +97,7 @@ public class TestRouteLevelServiceInsertionCostEstimator {
         vrpBuilder.addJob(s1).addJob(s2).addJob(s3);
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("0,0")).setType(type).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle").setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true).setType(type).build();
         vrpBuilder.addVehicle(vehicle);
         vrp = vrpBuilder.build();
 

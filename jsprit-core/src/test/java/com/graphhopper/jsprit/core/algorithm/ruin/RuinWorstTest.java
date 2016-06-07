@@ -49,7 +49,7 @@ public class RuinWorstTest {
         Service s3 = Service.Builder.newInstance("s3")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
         RuinWorst worst = new RuinWorst(vrp, 1);
 
@@ -68,7 +68,7 @@ public class RuinWorstTest {
         Service s3 = Service.Builder.newInstance("s3")
             .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
         RuinWorst worst = new RuinWorst(vrp, 1);
         worst.setRuinShareFactory(new RuinShareFactory() {
@@ -132,9 +132,9 @@ public class RuinWorstTest {
             .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build())
             .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2")
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).addVehicle(v2).build();
         RuinWorst worst = new RuinWorst(vrp, 1);
@@ -169,9 +169,9 @@ public class RuinWorstTest {
             .setPickupLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(3, 1)).build())
             .setDeliveryLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(10, 10.1)).build()).build();
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2")
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).addVehicle(v2).build();
         RuinWorst worst = new RuinWorst(vrp, 1);

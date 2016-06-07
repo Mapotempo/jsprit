@@ -56,13 +56,13 @@ public class UpdateVehicleDependentTimeWindowTest {
         activityCosts = new WaitingTimeCosts();
         vrpBuilder.setRoutingCost(routingCosts);
 
-        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(100.).build();
+        vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true).setEarliestStart(0.).setLatestArrival(100.).build();
 
-        vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("0,0")).setEarliestStart(0.).setLatestArrival(60.).build();
+        vehicle2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true).setEarliestStart(0.).setLatestArrival(60.).build();
 
-        vehicle3 = VehicleImpl.Builder.newInstance("v3").setStartLocation(Location.newInstance("40,0")).setEarliestStart(0.).setLatestArrival(100.).build();
+        vehicle3 = VehicleImpl.Builder.newInstance("v3").setStartLocation(Location.newInstance("40,0")).setReturnToDepot(true).setEarliestStart(0.).setLatestArrival(100.).build();
 
-        equivalentOf3 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("40,0")).setEarliestStart(0.).setLatestArrival(100.).build();
+        equivalentOf3 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("40,0")).setReturnToDepot(true).setEarliestStart(0.).setLatestArrival(100.).build();
 
         vrpBuilder.addVehicle(vehicle).addVehicle(vehicle2).addVehicle(vehicle3).addVehicle(equivalentOf3);
 

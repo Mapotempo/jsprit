@@ -125,7 +125,7 @@ public class VehicleImpl extends AbstractVehicle {
 
         private double latestArrival = Double.MAX_VALUE;
 
-        private boolean returnToDepot = true;
+        private boolean returnToDepot = false;
 
         private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
 
@@ -231,12 +231,7 @@ public class VehicleImpl extends AbstractVehicle {
          * <p>if {@link VehicleType} is not set, default vehicle-type is set with id="default" and
          * capacity=0
          * <p>
-         * <p>if startLocationId || locationId is null (=> startLocationCoordinate || locationCoordinate must be set) then startLocationId=startLocationCoordinate.toString()
-         * and locationId=locationCoordinate.toString() [coord.toString() --> [x=x_val][y=y_val])
-         * <p>if endLocationId is null and endLocationCoordinate is set then endLocationId=endLocationCoordinate.toString()
-         * <p>if endLocationId==null AND endLocationCoordinate==null then endLocationId=startLocationId AND endLocationCoord=startLocationCoord
-         * Thus endLocationId can never be null even returnToDepot is false.
-         *
+         * <p>if endLocationId is null and returnToDepot=true then endLocationId=startLocationId AND endLocationCoord=startLocationCoord
          * @return vehicle
          * @throws IllegalArgumentException if both locationId and locationCoord is not set or (endLocationCoord!=null AND returnToDepot=false)
          *                               or (endLocationId!=null AND returnToDepot=false)
@@ -244,16 +239,11 @@ public class VehicleImpl extends AbstractVehicle {
         public VehicleImpl build() {
             if (latestArrival < earliestStart)
                 throw new IllegalArgumentException("latest arrival of vehicle " + id + " must not be smaller than its start time");
-            if (startLocation != null && endLocation != null) {
-                if (!startLocation.getId().equals(endLocation.getId()) && !returnToDepot)
-                    throw new IllegalArgumentException("this must not be. you specified both endLocationId and open-routes. this is contradictory. <br>" +
-                        "if you set endLocation, returnToDepot must be true. if returnToDepot is false, endLocationCoord must not be specified.");
-            }
-            if (startLocation != null && endLocation == null) {
+            if((returnToDepot && endLocation != null) || (startLocation == null && returnToDepot))
+                throw new IllegalArgumentException("this must not be. you can't come back to depot if it is unset. <br>" +
+                    "Nor, you can't come back to depot if the endLocation is set.");
+            if (startLocation != null && endLocation == null && returnToDepot) {
                 endLocation = startLocation;
-            }
-            if (startLocation == null && endLocation == null) {
-                throw new IllegalArgumentException("vehicle requires startLocation. but neither locationId nor locationCoord nor startLocationId nor startLocationCoord has been set");
             }
             skills = skillBuilder.build();
             return new VehicleImpl(this);
@@ -338,7 +328,7 @@ public class VehicleImpl extends AbstractVehicle {
         coefSetupTime = builder.coefSetupTime;
         maximumRouteDuration = builder.maximumRouteDuration;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation.getId(), endLocation.getId(), earliestDeparture, latestArrival, skills, returnToDepot, maximumRouteDuration));
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation, endLocation, earliestDeparture, latestArrival, skills, returnToDepot, maximumRouteDuration));
     }
 
     /**

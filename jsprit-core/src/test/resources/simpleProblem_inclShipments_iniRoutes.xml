@@ -14,10 +14,6 @@
                 <id>[x=0.0][y=0.0]</id>
                 <coord x="0.0" y="0.0"/>
             </startLocation>
-            <endLocation>
-                <id>[x=0.0][y=0.0]</id>
-                <coord x="0.0" y="0.0"/>
-            </endLocation>
             <timeSchedule>
                 <start>0.0</start>
                 <end>46800.0</end>
@@ -31,10 +27,6 @@
                 <id>[x=0.0][y=0.0]</id>
                 <coord x="0.0" y="0.0"/>
             </startLocation>
-            <endLocation>
-                <id>[x=0.0][y=0.0]</id>
-                <coord x="0.0" y="0.0"/>
-            </endLocation>
             <timeSchedule>
                 <start>0.0</start>
                 <end>64800.0</end>

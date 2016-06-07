@@ -120,6 +120,7 @@ public class VehicleRouteBuilderTest {
         builder.addDelivery(s);
         builder.addDelivery(s2);
         VehicleRoute route = builder.build();
+        System.out.println(vehicle.getEndLocation().getId());
         assertEquals("vehLoc", route.getEnd().getLocation().getId());
     }
 
