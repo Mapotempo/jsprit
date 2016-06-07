@@ -24,6 +24,7 @@ import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingActivityCosts;
 import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 
@@ -100,10 +101,8 @@ public class VehicleDependentTimeWindowConstraints implements HardActivityConstr
 			 *                                          |- earliest arrival of vehicle
 			 *                       |--- nextAct ---|
 			 */
-        double transportTime_prevAct_nextActLocation = routingCosts.getTransportTime(prevAct.getLocation(), nextActLocation, prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
-        double setupTime_prevAct_nextActLocation = 0.;
-        if(!prevAct.getLocation().equals(nextActLocation))
-            setupTime_prevAct_nextActLocation = setup_time_nextActLocation;
+        double transportTime_prevAct_nextActLocation = routingCosts.getTransportTime(prevAct.getLocation(), nextActLocation, prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());           
+        double setupTime_prevAct_nextActLocation = setupCosts.getSetupTime(prevAct.getLocation(), nextActLocation, setup_time_nextActLocation, iFacts.getNewVehicle());
         double arrTimeAtNextOnDirectRouteWithNewVehicle = prevActDepTime + transportTime_prevAct_nextActLocation;
         double readyTimeAtNextOnDirectRouteWithVehicle = arrTimeAtNextOnDirectRouteWithNewVehicle + setupTime_prevAct_nextActLocation;
         if (readyTimeAtNextOnDirectRouteWithVehicle > latestReadyTimeAtNextAct) {

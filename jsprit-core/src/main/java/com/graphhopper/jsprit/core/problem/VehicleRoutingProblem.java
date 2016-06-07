@@ -395,12 +395,12 @@ public class VehicleRoutingProblem {
             if (!vehicleTypes.contains(vehicle.getType())) {
                 vehicleTypes.add(vehicle.getType());
             }
+            if(vehicle.getStartLocation() != null) {
             String startLocationId = vehicle.getStartLocation().getId();
             addLocationToTentativeLocations(vehicle.getStartLocation());
-//            tentative_coordinates.put(startLocationId, vehicle.getStartLocation().getCoordinate());
-            if (!vehicle.isReturnToDepot()) {
+            }
+            if (!vehicle.isReturnToDepot() && vehicle.getEndLocation() != null) {
                 addLocationToTentativeLocations(vehicle.getEndLocation());
-//                tentative_coordinates.put(vehicle.getEndLocation().getId(), vehicle.getEndLocation().getCoordinate());
             }
             return this;
         }

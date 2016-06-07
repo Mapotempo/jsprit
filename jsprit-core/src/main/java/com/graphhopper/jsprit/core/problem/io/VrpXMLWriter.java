@@ -355,8 +355,8 @@ public class VrpXMLWriter {
         for (Vehicle vehicle : vrp.getVehicles()) {
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").id", vehicle.getId());
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").typeId", vehicle.getType().getTypeId());
-            xmlConfig.setProperty(vehiclePathString + "(" + counter + ").startLocation.id", vehicle.getStartLocation().getId());
             if(vehicle.getStartLocation() != null) {
+                xmlConfig.setProperty(vehiclePathString + "(" + counter + ").startLocation.id", vehicle.getStartLocation().getId());
                 if (vehicle.getStartLocation().getCoordinate() != null) {
                     xmlConfig.setProperty(vehiclePathString + "(" + counter + ").startLocation.coord[@x]", vehicle.getStartLocation().getCoordinate().getX());
                     xmlConfig.setProperty(vehiclePathString + "(" + counter + ").startLocation.coord[@y]", vehicle.getStartLocation().getCoordinate().getY());
