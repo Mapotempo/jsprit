@@ -259,8 +259,10 @@ public class VehicleRoutingProblem {
         }
 
         private void addLocationToTentativeLocations(Location location) {
-            tentative_coordinates.put(location.getId(), location.getCoordinate());
-            allLocations.add(location);
+            if(location != null) {
+                tentative_coordinates.put(location.getId(), location.getCoordinate());
+                allLocations.add(location);
+            }
         }
 
         private void addJobToFinalJobMapAndCreateActivities(Job job) {
@@ -397,7 +399,7 @@ public class VehicleRoutingProblem {
             String startLocationId = vehicle.getStartLocation().getId();
             addLocationToTentativeLocations(vehicle.getStartLocation());
 //            tentative_coordinates.put(startLocationId, vehicle.getStartLocation().getCoordinate());
-            if (!vehicle.getEndLocation().getId().equals(startLocationId)) {
+            if (!vehicle.isReturnToDepot()) {
                 addLocationToTentativeLocations(vehicle.getEndLocation());
 //                tentative_coordinates.put(vehicle.getEndLocation().getId(), vehicle.getEndLocation().getCoordinate());
             }

@@ -76,10 +76,10 @@ public class TestCalculatesServiceInsertion {
     public void setup() {
 
         VehicleType t1 = VehicleTypeImpl.Builder.newInstance("t1").addCapacityDimension(0, 1000).setCostPerDistance(1.0).build();
-        vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setStartLocation(Location.newInstance("0,0")).setType(t1).build();
+        vehicle = VehicleImpl.Builder.newInstance("vehicle").setLatestArrival(100.0).setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true).setType(t1).build();
 
         VehicleType t2 = VehicleTypeImpl.Builder.newInstance("t2").addCapacityDimension(0, 1000).setCostPerDistance(2.0).build();
-        newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setStartLocation(Location.newInstance("0,0")).setType(t2).build();
+        newVehicle = VehicleImpl.Builder.newInstance("newVehicle").setLatestArrival(100.0).setStartLocation(Location.newInstance("0,0")).setReturnToDepot(true).setType(t2).build();
 
         driver = DriverImpl.noDriver();
 
@@ -241,13 +241,13 @@ public class TestCalculatesServiceInsertion {
                 return EuclideanDistanceCalculator.calculateDistance(coords.get(from.getId()), coords.get(to.getId()));
             }
         };
-        Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocation(Location.newInstance("oldV")).build();
+        Vehicle oldVehicle = VehicleImpl.Builder.newInstance("oldV").setStartLocation(Location.newInstance("oldV")).setReturnToDepot(true).build();
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(oldVehicle, DriverImpl.noDriver())
             .addService(Service.Builder.newInstance("service").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build())
             .build();
 
-        Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocation(Location.newInstance("newV")).build();
+        Vehicle newVehicle = VehicleImpl.Builder.newInstance("newV").setStartLocation(Location.newInstance("newV")).setReturnToDepot(true).build();
 
         AdditionalAccessEgressCalculator accessEgressCalc = new AdditionalAccessEgressCalculator(routingCosts);
         Job job = Service.Builder.newInstance("service2").addSizeDimension(0, 0).setLocation(Location.newInstance("service")).build();
