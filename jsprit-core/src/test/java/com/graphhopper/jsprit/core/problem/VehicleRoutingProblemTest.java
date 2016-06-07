@@ -68,10 +68,10 @@ public class VehicleRoutingProblemTest {
     public void whenBuildingWithFourVehicles_vrpShouldContainTheCorrectNuOfVehicles() {
         VehicleRoutingProblem.Builder builder = VehicleRoutingProblem.Builder.newInstance();
 
-        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).build();
-        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).build();
-        VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setStartLocation(Location.newInstance("start")).build();
-        VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("start")).build();
+        VehicleImpl v1 = VehicleImpl.Builder.newInstance("v1").setStartLocation(Location.newInstance("start")).setReturnToDepot(true).build();
+        VehicleImpl v2 = VehicleImpl.Builder.newInstance("v2").setStartLocation(Location.newInstance("start")).setReturnToDepot(true).build();
+        VehicleImpl v3 = VehicleImpl.Builder.newInstance("v3").setStartLocation(Location.newInstance("start")).setReturnToDepot(true).build();
+        VehicleImpl v4 = VehicleImpl.Builder.newInstance("v4").setStartLocation(Location.newInstance("start")).setReturnToDepot(true).build();
 
         builder.addVehicle(v1).addVehicle(v2).addVehicle(v3).addVehicle(v4);
 

@@ -249,7 +249,7 @@ public class TestLocalActivityInsertionCostsCalculator {
     @Test
     public void whenAddingNewInEmptyRoute_itShouldCalcInsertionCostsCorrectly() {
         VehicleTypeImpl type = VehicleTypeImpl.Builder.newInstance("t").setCostPerWaitingTime(1.).build();
-        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).build();
+        VehicleImpl v = VehicleImpl.Builder.newInstance("v").setType(type).setStartLocation(Location.newInstance(0, 0)).setReturnToDepot(true).build();
 
         Service newS = Service.Builder.newInstance("new").setServiceTime(10).setLocation(Location.newInstance(10, 0)).setTimeWindow(TimeWindow.newInstance(100, 150)).build();
 

@@ -36,7 +36,6 @@
                 <start>0.0</start>
                 <end>46800.0</end>
             </timeSchedule>
-            <returnToDepot>true</returnToDepot>
         </vehicle>
         <vehicle>
             <id>veh2</id>
@@ -49,7 +48,6 @@
                 <start>0.0</start>
                 <end>64800.0</end>
             </timeSchedule>
-            <returnToDepot>true</returnToDepot>
         </vehicle>
     </vehicles>
     <vehicleTypes>

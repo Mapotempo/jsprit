@@ -61,12 +61,13 @@ public class SolutionAnalyserTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type)
-            .setStartLocation(Location.newInstance(-5, 0))
+            .setStartLocation(Location.newInstance(-5, 0)).setReturnToDepot(true)
             .addSkill("skill1").addSkill("skill2")
             .build();
 
         VehicleImpl vehicle2 = VehicleImpl.Builder.newInstance("v2").setType(type)
-            .setStartLocation(Location.newInstance(5, 0)).build();
+            .setStartLocation(Location.newInstance(5, 0)).setReturnToDepot(true)
+            .build();
 
         Service s1 = Service.Builder.newInstance("s1")
             .setTimeWindow(TimeWindow.newInstance(10, 20))
@@ -118,7 +119,7 @@ public class SolutionAnalyserTest {
         VehicleType type = VehicleTypeImpl.Builder.newInstance("type").setFixedCost(100.).setCostPerDistance(2.).addCapacityDimension(0, 15).build();
 
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v1").setType(type)
-            .setStartLocation(Location.newInstance(-5, 0))
+            .setStartLocation(Location.newInstance(-5, 0)).setReturnToDepot(true)
             .setLatestArrival(150.)
             .build();
 
