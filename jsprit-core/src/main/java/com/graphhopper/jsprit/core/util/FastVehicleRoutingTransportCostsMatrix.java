@@ -126,6 +126,8 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
 
     @Override
     public double getTransportTime(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+        if(from == null || to == null)
+            return 0.0;
         if (from.getIndex() < 0 || to.getIndex() < 0)
             throw new IllegalArgumentException("index of from " + from + " to " + to + " < 0 ");
         int timeIndex = 1;
@@ -162,6 +164,8 @@ public class FastVehicleRoutingTransportCostsMatrix extends AbstractForwardVehic
 
     @Override
     public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+        if(from == null || to == null)
+            return 0.0;
         if (from.getIndex() < 0 || to.getIndex() < 0)
             throw new IllegalArgumentException("index of from " + from + " to " + to + " < 0 ");
         if (vehicle == null) return getDistance(from.getIndex(), to.getIndex());
