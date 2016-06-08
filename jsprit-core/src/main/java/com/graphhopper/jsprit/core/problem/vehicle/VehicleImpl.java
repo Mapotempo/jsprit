@@ -20,8 +20,12 @@ import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -104,6 +108,11 @@ public class VehicleImpl extends AbstractVehicle {
             return null;
         }
 
+        @Override
+        public List<Skills> getAlternativeSkills() {
+            return null;
+        }
+
     }
 
     /**
@@ -132,6 +141,8 @@ public class VehicleImpl extends AbstractVehicle {
         private Skills.Builder skillBuilder = Skills.Builder.newInstance();
 
         private Skills skills;
+
+        private ArrayList<Skills> alternativeSkills = new ArrayList<Skills>();
 
         private Location startLocation;
 
@@ -225,6 +236,11 @@ public class VehicleImpl extends AbstractVehicle {
             return this;
         }
 
+        public Builder addAlternativeSkills(Skills skills) {
+            alternativeSkills.add(skills);
+            return this;
+        }
+
         /**
          * Builds and returns the vehicle.
          * <p>
@@ -305,6 +321,8 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final Skills skills;
 
+    private ArrayList<Skills> alternativeSkills = new ArrayList<Skills>();
+
     private final Location endLocation;
 
     private final Location startLocation;
@@ -322,13 +340,14 @@ public class VehicleImpl extends AbstractVehicle {
         latestArrival = builder.latestArrival;
         returnToDepot = builder.returnToDepot;
         skills = builder.skills;
+        alternativeSkills = builder.alternativeSkills;
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
         coefSetupTime = builder.coefSetupTime;
         maximumRouteDuration = builder.maximumRouteDuration;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation, endLocation, earliestDeparture, latestArrival, skills, returnToDepot, maximumRouteDuration));
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation, endLocation, earliestDeparture, latestArrival, skills, alternativeSkills, returnToDepot, maximumRouteDuration));
     }
 
     /**
@@ -436,6 +455,11 @@ public class VehicleImpl extends AbstractVehicle {
         } else if (!type.equals(other.type))
             return false;
         return true;
+    }
+
+    @Override
+    public List<Skills> getAlternativeSkills() {
+        return alternativeSkills;
     }
 
 }

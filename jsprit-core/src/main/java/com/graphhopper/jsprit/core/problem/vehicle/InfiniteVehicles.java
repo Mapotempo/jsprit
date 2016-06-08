@@ -85,7 +85,7 @@ class InfiniteVehicles implements VehicleFleetManager {
     @Override
     public Collection<Vehicle> getAvailableVehicles(Vehicle withoutThisType) {
         Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
-        VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation(), withoutThisType.getEndLocation(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills(), withoutThisType.isReturnToDepot(),withoutThisType.getMaximumRouteDuration());
+        VehicleTypeKey thisKey = new VehicleTypeKey(withoutThisType.getType().getTypeId(), withoutThisType.getStartLocation(), withoutThisType.getEndLocation(), withoutThisType.getEarliestDeparture(), withoutThisType.getLatestArrival(), withoutThisType.getSkills(), withoutThisType.getAlternativeSkills(), withoutThisType.isReturnToDepot(),withoutThisType.getMaximumRouteDuration());
         for (VehicleTypeKey key : types.keySet()) {
             if (!key.equals(thisKey)) {
                 vehicles.add(types.get(key));
