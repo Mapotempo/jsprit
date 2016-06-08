@@ -258,6 +258,8 @@ public class VehicleRoutingTransportCostsMatrix extends AbstractForwardVehicleRo
 
     @Override
     public double getTransportCost(Location from, Location to, double departureTime, Driver driver, Vehicle vehicle) {
+        if(from == null || to == null)
+            return 0.0;
         if (vehicle == null) return getDistance(from.getId(), to.getId());
         VehicleCostParams costParams = vehicle.getType().getVehicleCostParams();
         return costParams.perDistanceUnit * getDistance(from.getId(), to.getId()) + costParams.perTransportTimeUnit * getTime(from.getId(), to.getId());
