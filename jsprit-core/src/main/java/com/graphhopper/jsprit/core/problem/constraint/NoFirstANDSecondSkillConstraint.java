@@ -16,17 +16,12 @@ import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 
 public class NoFirstANDSecondSkillConstraint implements HardActivityConstraint {
     
-    private int[] firstIndexes;
-    
     private Hashtable<String, Integer> linkedSkills = new Hashtable<String, Integer>();
-    
-    private Collection<Vehicle> fleet;
     
     private StateManager stateManager;
 
-    public NoFirstANDSecondSkillConstraint(Hashtable<String, Integer> linkedSkills, Collection<Vehicle> fleet, StateManager stateManager) {
+    public NoFirstANDSecondSkillConstraint(Hashtable<String, Integer> linkedSkills, StateManager stateManager) {
         this.linkedSkills = linkedSkills;
-        this.fleet = fleet;
         this.stateManager = stateManager;
     }
 
@@ -52,16 +47,13 @@ public class NoFirstANDSecondSkillConstraint implements HardActivityConstraint {
                                     if (((isSkillPickup(iter_2, newAct) && isSkillPickup(iter, nextAct)) || (isSkillPickup(iter, newAct) && isSkillPickup(iter_2, nextAct)))) {
                                         return ConstraintsStatus.NOT_FULFILLED;
                                     }
-                                    return ConstraintsStatus.FULFILLED;
                                 }
                         
                                 if (isDelivery(newAct)) {
                                     if ((isSkillDelivery(iter_2, newAct) && !isSkillDelivery(iter, newAct) && hasSkillInVehicle(iter, loadAtPrevAct)) || (isSkillDelivery(iter, newAct) && !isSkillDelivery(iter_2, newAct) && hasSkillInVehicle(iter_2, loadAtPrevAct))) {
                                         return ConstraintsStatus.NOT_FULFILLED_BREAK;
                                     }
-                                    return ConstraintsStatus.FULFILLED;
                                 }
-                                throw new IllegalStateException("can only constraint shipments");
                             }
                 }
         return ConstraintsStatus.FULFILLED; 
