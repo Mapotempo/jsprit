@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -37,10 +39,11 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final double earliestStart;
     public final double latestEnd;
     public final Skills skills;
+    public final List<Skills> alternativeSkills;
     public final boolean returnToDepot;
     public final Capacity initCapa;
 
-    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Capacity initCapa) {
+    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, List<Skills> alternativeSkills, boolean returnToDepot, Capacity initCapa) {
         super();
         this.type = typeId;
         this.startLocation = startLocation;
@@ -48,6 +51,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.earliestStart = earliestStart;
         this.latestEnd = latestEnd;
         this.skills = skills;
+        this.alternativeSkills = alternativeSkills;
         this.returnToDepot = returnToDepot;
         this.initCapa = initCapa;
     }
@@ -65,6 +69,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (endLocation != null && that.endLocation != null && !endLocation.getId().equals(that.endLocation.getId())) return false;
         if (!skills.equals(that.skills)) return false;
         if (startLocation != null && that.endLocation != null && !startLocation.getId().equals(that.startLocation.getId())) return false;
+        if (!alternativeSkills.equals(that.alternativeSkills)) return false;
         if (!type.equals(that.type)) return false;
 
         return true;
@@ -84,6 +89,8 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         temp = Double.doubleToLongBits(latestEnd);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + skills.hashCode();
+        if(alternativeSkills != null)
+            result = 31 * result + alternativeSkills.hashCode();
         result = 31 * result + (returnToDepot ? 1 : 0);
         return result;
     }

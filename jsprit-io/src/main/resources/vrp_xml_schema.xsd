@@ -65,8 +65,7 @@
                                                                 maxOccurs="1" default="1.0"/>
                                         <xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="skills" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                                        <xs:element name="breaks" type="breaksType" minOccurs="0" maxOccurs="1"/><xs:element name="capacity" type="xs:integer" minOccurs="0" maxOccurs="1"
-                                                    default="0"/>
+                                        <xs:element name="breaks" type="breaksType" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="initial-capacity" minOccurs="0" maxOccurs="1">
                                             <xs:complexType>
                                                 <xs:sequence>
@@ -80,6 +79,13 @@
                                                             </xs:simpleContent>
                                                         </xs:complexType>
                                                     </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="alternativeSkills" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="skillList" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
