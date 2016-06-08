@@ -395,6 +395,14 @@ public class VrpXMLWriter {
             //write skills
             String skillString = getSkillString(vehicle);
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").skills", skillString);
+            if(vehicle.getAlternativeSkills() != null) {
+                int index = 0;
+                Collection<Skills> alterSkills = vehicle.getAlternativeSkills();
+                for(Skills skills : alterSkills) {
+                    xmlConfig.setProperty(vehiclePathString + "(" + counter + ").alternativeSkills.skillList(" + index + ")", createSkillString(skills));
+                    ++index;
+                }
+            }
 
             counter++;
         }
