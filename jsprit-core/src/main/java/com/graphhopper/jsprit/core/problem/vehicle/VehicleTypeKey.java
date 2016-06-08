@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
 import com.graphhopper.jsprit.core.problem.Skills;
 
@@ -35,9 +37,10 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final double earliestStart;
     public final double latestEnd;
     public final Skills skills;
+    public final List<Skills> alternativeSkills;
     public final boolean returnToDepot;
 
-    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, List<Skills> alternativeSkills, boolean returnToDepot) {
         super();
         this.type = typeId;
         this.startLocationId = startLocationId;
@@ -45,6 +48,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.earliestStart = earliestStart;
         this.latestEnd = latestEnd;
         this.skills = skills;
+        this.alternativeSkills = alternativeSkills;
         this.returnToDepot = returnToDepot;
     }
 
@@ -61,6 +65,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (!endLocationId.equals(that.endLocationId)) return false;
         if (!skills.equals(that.skills)) return false;
         if (!startLocationId.equals(that.startLocationId)) return false;
+        if (!alternativeSkills.equals(that.alternativeSkills)) return false;
         if (!type.equals(that.type)) return false;
 
         return true;
@@ -78,6 +83,8 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         temp = Double.doubleToLongBits(latestEnd);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + skills.hashCode();
+        if(alternativeSkills != null)
+            result = 31 * result + alternativeSkills.hashCode();
         result = 31 * result + (returnToDepot ? 1 : 0);
         return result;
     }

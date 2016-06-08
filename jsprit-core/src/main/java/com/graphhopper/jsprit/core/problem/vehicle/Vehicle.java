@@ -17,6 +17,8 @@
  */
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import java.util.List;
+
 import com.graphhopper.jsprit.core.problem.HasId;
 import com.graphhopper.jsprit.core.problem.HasIndex;
 import com.graphhopper.jsprit.core.problem.Location;
@@ -72,6 +74,8 @@ public interface Vehicle extends HasId, HasIndex {
     public abstract VehicleTypeKey getVehicleTypeIdentifier();
 
     public abstract Skills getSkills();
+
+    public abstract List<Skills> getAlternativeSkills();
 
     public abstract Break getBreak();
 }

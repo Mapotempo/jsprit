@@ -95,6 +95,8 @@ public class VehicleRoutingProblem {
 
         private Set<String> addedVehicleIds = new LinkedHashSet<String>();
 
+        private Hashtable<String, Integer> linkedSkills;
+
         private boolean hasBreaks = false;
 
         private JobActivityFactory jobActivityFactory = new JobActivityFactory() {
@@ -463,6 +465,10 @@ public class VehicleRoutingProblem {
             return this;
         }
 
+        public Builder setLinkedSkill(Hashtable<String, Integer> linkedSkills) {
+            this.linkedSkills = linkedSkills;
+            return this;
+        }
 
         /**
          * Adds a collection of vehicles.
@@ -572,6 +578,8 @@ public class VehicleRoutingProblem {
 
     private Map<Job, List<AbstractActivity>> activityMap;
 
+    private Hashtable<String, Integer> linkedSkills;
+
     private int nuActivities;
 
     private final JobActivityFactory jobActivityFactory = new JobActivityFactory() {
@@ -596,6 +604,7 @@ public class VehicleRoutingProblem {
         this.nuActivities = builder.activityIndexCounter;
         this.allLocations = builder.allLocations;
         this.allJobs = builder.tentativeJobs;
+        this.linkedSkills = builder.linkedSkills;
         logger.info("setup problem: {}", this);
     }
 
@@ -692,6 +701,10 @@ public class VehicleRoutingProblem {
     }
 
 //    public Map<Job,List<AbstractActivity>> getActivityMap() { return Collections.unmodifiableMap(activityMap); }
+
+    public Hashtable<String, Integer> getLinkedSkills() {
+        return linkedSkills;
+    }
 
     /**
      * @return total number of activities
