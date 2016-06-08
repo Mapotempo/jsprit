@@ -19,6 +19,7 @@ package com.graphhopper.jsprit.io.problem;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.driver.Driver;
@@ -83,6 +84,8 @@ public class VrpXMLReader {
 
     private Set<String> freezedJobIds = new HashSet<String>();
 
+    private Hashtable<String, Integer> linkedSkills;
+
     private boolean schemaValidation = true;
 
     private Collection<VehicleRoutingProblemSolution> solutions;
@@ -104,6 +107,7 @@ public class VrpXMLReader {
         this.vehicleMap = new LinkedHashMap<String, Vehicle>();
         this.serviceMap = new LinkedHashMap<String, Service>();
         this.shipmentMap = new LinkedHashMap<String, Shipment>();
+        this.linkedSkills = new Hashtable<String, Integer>();
         this.solutions = solutions;
     }
 
@@ -112,6 +116,7 @@ public class VrpXMLReader {
         this.vehicleMap = new LinkedHashMap<String, Vehicle>();
         this.serviceMap = new LinkedHashMap<String, Service>();
         this.shipmentMap = new LinkedHashMap<String, Shipment>();
+        this.linkedSkills = new Hashtable<String, Integer>();
         this.solutions = null;
     }
 
@@ -166,7 +171,6 @@ public class VrpXMLReader {
     private void read(XMLConfiguration xmlConfig) {
         readProblemType(xmlConfig);
         readVehiclesAndTheirTypes(xmlConfig);
-
         readShipments(xmlConfig);
         readServices(xmlConfig);
 
@@ -187,6 +191,7 @@ public class VrpXMLReader {
                 vrpBuilder.addJob(shipment);
             }
         }
+        vrpBuilder.setLinkedSkill(linkedSkills);
     }
 
     private void readInitialRoutes(XMLConfiguration xmlConfig) {
@@ -347,6 +352,10 @@ public class VrpXMLReader {
         return vehicleMap.get(vehicleId).getBreak();
     }
 
+    private Hashtable<String, Integer> getLinkedSkills() {
+        return linkedSkills;
+    }
+
     private void readProblemType(XMLConfiguration vrpProblem) {
         String fleetSize = vrpProblem.getString("problemType.fleetSize");
         if (fleetSize == null) vrpBuilder.setFleetSize(FleetSize.INFINITE);
@@ -467,7 +476,12 @@ public class VrpXMLReader {
             if (skillString != null) {
                 String cleaned = skillString.replaceAll("\\s", "");
                 String[] skillTokens = cleaned.split("[,;]");
-                for (String skill : skillTokens) builder.addRequiredSkill(skill.toLowerCase());
+                for (String skill : skillTokens) {
+                    builder.addRequiredSkill(skill.toLowerCase());
+                    if(linkedSkills.containsKey(skill)) {
+                        builder.addSizeDimension(linkedSkills.get(skill),1);
+                    }
+                }
             }
 
             //build shipment
@@ -557,7 +571,11 @@ public class VrpXMLReader {
             if (skillString != null) {
                 String cleaned = skillString.replaceAll("\\s", "");
                 String[] skillTokens = cleaned.split("[,;]");
-                for (String skill : skillTokens) builder.addRequiredSkill(skill.toLowerCase());
+                for (String skill : skillTokens) {
+                    builder.addRequiredSkill(skill.toLowerCase());
+                    if(linkedSkills.containsKey(skill))
+                        builder.addSizeDimension(linkedSkills.get(skill),1);
+                }
             }
 
             //build service
@@ -569,6 +587,35 @@ public class VrpXMLReader {
     }
 
     private void readVehiclesAndTheirTypes(XMLConfiguration vrpProblem) {
+        // read capacities size
+        int max_capacity_index = 0;
+        List<HierarchicalConfiguration> early_typeConfigs = vrpProblem.configurationsAt("vehicleTypes.type");
+        for (HierarchicalConfiguration typeConfig : early_typeConfigs) {
+
+            List<HierarchicalConfiguration> dimensionConfigs = typeConfig.configurationsAt("capacity-dimensions.dimension");
+            for (HierarchicalConfiguration dimension : dimensionConfigs) {
+                max_capacity_index = Math.max(dimension.getInt("[@index]"),max_capacity_index);
+            }
+        }
+
+        //read all skills first
+        List<HierarchicalConfiguration> early_vehicleConfigs = vrpProblem.configurationsAt("vehicles.vehicle");
+        for (HierarchicalConfiguration vehicleConfig : early_vehicleConfigs) {
+          //read alternative skills
+            List<HierarchicalConfiguration> alternativeSkillsConfigs = vehicleConfig.configurationsAt("alternativeSkills.skillList");
+            if (!alternativeSkillsConfigs.isEmpty()) {
+                for (HierarchicalConfiguration skConfig : alternativeSkillsConfigs) {
+                    String alterSkillString = skConfig.getString("");
+                    String cleaned = alterSkillString.replaceAll("\\s", "");
+                    String[] skillTokens = cleaned.split("[,;]");
+                    Skills.Builder altern = Skills.Builder.newInstance();
+                    for (String skill : skillTokens) {
+                        altern.addSkill(skill.toLowerCase());
+                        linkedSkills.putIfAbsent(skill, linkedSkills.size()+max_capacity_index+1);
+                    }
+                }
+            }
+        }
 
         //read vehicle-types
         Map<String, VehicleType> types = new HashMap<String, VehicleType>();
@@ -597,6 +644,9 @@ public class VrpXMLReader {
                     Integer value = dimension.getInt("");
                     typeBuilder.addCapacityDimension(index, value);
                 }
+            }
+            for(String table : linkedSkills.keySet()) {
+                typeBuilder.addCapacityDimension(linkedSkills.get(table), Integer.MAX_VALUE);
             }
 
             Double fix = typeConfig.getDouble("costs.fixed");
@@ -744,6 +794,22 @@ public class VrpXMLReader {
                         capacityBuilder.addDimension(indexv, value);
                 }
                 builder.setInitialCapacity(capacityBuilder.build());
+            }
+
+            //read alternative skills
+            List<HierarchicalConfiguration> alternativeSkillsConfigs = vehicleConfig.configurationsAt("alternativeSkills.skillList");
+            if (!alternativeSkillsConfigs.isEmpty()) {
+                for (HierarchicalConfiguration skConfig : alternativeSkillsConfigs) {
+                    String alterSkillString = skConfig.getString("");
+                    String cleaned = alterSkillString.replaceAll("\\s", "");
+                    String[] skillTokens = cleaned.split("[,;]");
+                    Skills.Builder altern = Skills.Builder.newInstance();
+                    for (String skill : skillTokens) {
+                        altern.addSkill(skill.toLowerCase());
+                        builder.addSkill(skill);
+                    }
+                    builder.addAlternativeSkills(altern.build());
+                }
             }
 
             // read break
