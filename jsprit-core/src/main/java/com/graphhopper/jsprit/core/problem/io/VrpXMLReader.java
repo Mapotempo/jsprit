@@ -476,8 +476,8 @@ public class VrpXMLReader {
                 String[] skillTokens = cleaned.split("[,;]");
                 for (String skill : skillTokens) {
                     builder.addRequiredSkill(skill.toLowerCase());
-                    if(linkedSkills.containsKey(skill)) {
-                        builder.addSizeDimension(linkedSkills.get(skill),1);
+                    if(linkedSkills.containsKey(skill.toLowerCase())) {
+                        builder.addSizeDimension(linkedSkills.get(skill.toLowerCase()),1);
                     }
                 }
             }
@@ -571,8 +571,8 @@ public class VrpXMLReader {
                 String[] skillTokens = cleaned.split("[,;]");
                 for (String skill : skillTokens) {
                     builder.addRequiredSkill(skill.toLowerCase());
-                    if(linkedSkills.containsKey(skill))
-                        builder.addSizeDimension(linkedSkills.get(skill),1);
+                    if(linkedSkills.containsKey(skill.toLowerCase()))
+                        builder.addSizeDimension(linkedSkills.get(skill.toLowerCase()),1);
                 }
             }
 
@@ -609,7 +609,7 @@ public class VrpXMLReader {
                     Skills.Builder altern = Skills.Builder.newInstance();
                     for (String skill : skillTokens) {
                         altern.addSkill(skill.toLowerCase());
-                        linkedSkills.putIfAbsent(skill, linkedSkills.size()+max_capacity_index+1);
+                        linkedSkills.putIfAbsent(skill.toLowerCase(), linkedSkills.size()+max_capacity_index+1);
                     }
                 }
             }

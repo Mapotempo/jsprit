@@ -41,16 +41,16 @@ public class NoFirstANDSecondSkillConstraint implements HardActivityConstraint {
                         for(String iter_2 : alter_2.values())
                             if(!alter.containsSkill(iter_2) && !alter_2.containsSkill(iter)) {
                                 if (isPickup(newAct)) {
-                                    if (((isSkillPickup(iter_2, newAct) && hasSkillInVehicle(iter, loadAtPrevAct)) || (isSkillPickup(iter,newAct) && hasSkillInVehicle(iter_2,loadAtPrevAct)))) {
+                                    if (isSkillPickup(iter_2, newAct) && hasSkillInVehicle(iter, loadAtPrevAct)) {
                                         return ConstraintsStatus.NOT_FULFILLED;
                                     }
-                                    if (((isSkillPickup(iter_2, newAct) && isSkillPickup(iter, nextAct)) || (isSkillPickup(iter, newAct) && isSkillPickup(iter_2, nextAct)))) {
+                                    if (isSkillPickup(iter_2, newAct) && isSkillPickup(iter, nextAct)) {
                                         return ConstraintsStatus.NOT_FULFILLED;
                                     }
                                 }
                         
                                 if (isDelivery(newAct)) {
-                                    if ((isSkillDelivery(iter_2, newAct) && !isSkillDelivery(iter, newAct) && hasSkillInVehicle(iter, loadAtPrevAct)) || (isSkillDelivery(iter, newAct) && !isSkillDelivery(iter_2, newAct) && hasSkillInVehicle(iter_2, loadAtPrevAct))) {
+                                    if (isSkillDelivery(iter_2, newAct) && !isSkillDelivery(iter, newAct) && hasSkillInVehicle(iter, loadAtPrevAct)) {
                                         return ConstraintsStatus.NOT_FULFILLED_BREAK;
                                     }
                                 }

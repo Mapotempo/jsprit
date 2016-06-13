@@ -18,6 +18,7 @@
  ******************************************************************************/
 package com.graphhopper.jsprit.core.problem.vehicle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
@@ -39,7 +40,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final double earliestStart;
     public final double latestEnd;
     public final Skills skills;
-    public final List<Skills> alternativeSkills;
+    public List<Skills> alternativeSkills = new ArrayList<Skills>();
     public final boolean returnToDepot;
     public Double maximumRouteDuration = null;
 
