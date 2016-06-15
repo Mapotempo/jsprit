@@ -225,7 +225,8 @@ public class VehicleImpl extends AbstractVehicle {
         }
 
         public Builder addAlternativeSkills(Skills skills) {
-            alternativeSkills.add(skills);
+            if(!alternativeSkills.contains(skills))
+                alternativeSkills.add(skills);
             return this;
         }
 

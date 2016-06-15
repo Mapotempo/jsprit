@@ -28,10 +28,8 @@ public class NoFirstANDSecondSkillConstraint implements HardActivityConstraint {
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext jobInsertionContext, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double departureTimeAtPrevAct) {
         Capacity loadAtPrevAct = getLoadAtPreviousAct(prevAct);
-        // elements to compare
         if(jobInsertionContext.getNewVehicle().getAlternativeSkills().size() == 0 || newAct instanceof Service)
             return ConstraintsStatus.FULFILLED;
-        // Recreate the two Skills array
         List<Skills> alternates = jobInsertionContext.getNewVehicle().getAlternativeSkills();
         for(Skills alter : alternates)
             for(Skills alter_2 : alternates)
