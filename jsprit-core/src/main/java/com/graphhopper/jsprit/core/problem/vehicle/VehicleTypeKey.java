@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.problem.vehicle;
 
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
+import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Skills;
 
 /**
@@ -36,8 +37,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final double latestEnd;
     public final Skills skills;
     public final boolean returnToDepot;
+    public final Capacity initCapa;
 
-    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
+    public VehicleTypeKey(String typeId, String startLocationId, String endLocationId, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, Capacity initCapa) {
         super();
         this.type = typeId;
         this.startLocationId = startLocationId;
@@ -46,6 +48,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.latestEnd = latestEnd;
         this.skills = skills;
         this.returnToDepot = returnToDepot;
+        this.initCapa = initCapa;
     }
 
     @Override

@@ -382,7 +382,11 @@ public class VrpXMLWriter {
                 }
 	        }
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").returnToDepot", vehicle.isReturnToDepot());
-
+            if(vehicle.getInitialCapacity() != null)
+                for (int i = 0; i < vehicle.getInitialCapacity().getNuOfDimensions(); i++) {
+                    xmlConfig.setProperty(vehiclePathString + "(" + counter + ").initial-capacity.dimension(" + i + ")[@index]", i);
+                    xmlConfig.setProperty(vehiclePathString + "(" + counter + ").initial-capacity.dimension(" + i + ")", vehicle.getInitialCapacity().get(i));
+                }
             //write skills
             String skillString = getSkillString(vehicle);
             xmlConfig.setProperty(vehiclePathString + "(" + counter + ").skills", skillString);

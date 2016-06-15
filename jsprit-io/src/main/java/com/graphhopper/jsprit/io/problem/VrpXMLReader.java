@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.io.problem;
 
+import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
@@ -695,6 +696,20 @@ public class VrpXMLReader {
                 String cleaned = skillString.replaceAll("\\s", "");
                 String[] skillTokens = cleaned.split("[,;]");
                 for (String skill : skillTokens) builder.addSkill(skill.toLowerCase());
+            }
+            
+            //read init loads
+            boolean initialLoadExist = vehicleConfig.containsKey("initial-capacity.dimension");
+            if (initialLoadExist) {
+                Capacity.Builder capacityBuilder = Capacity.Builder.newInstance();
+                List<HierarchicalConfiguration> dimensionConfigs = vehicleConfig.configurationsAt("initial-capacity.dimension");
+                for (HierarchicalConfiguration dimension : dimensionConfigs) {
+                    Integer indexv = dimension.getInt("[@index]");
+                    Integer value = dimension.getInt("");
+                    if( type.getCapacityDimensions().getNuOfDimensions() > indexv)
+                        capacityBuilder.addDimension(indexv, value);
+                }
+                builder.setInitialCapacity(capacityBuilder.build());
             }
 
             // read break
