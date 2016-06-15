@@ -71,16 +71,6 @@ public class VehicleTypeImpl implements VehicleType {
             this.perSetupTimeUnit = 0.;
         }
 
-        public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit, double perServiceTimeUnit) {
-            this.fix = fix;
-            this.perTimeUnit = perTimeUnit;
-            this.perTransportTimeUnit = perTimeUnit;
-            this.perDistanceUnit = perDistanceUnit;
-            this.perWaitingTimeUnit = perWaitingTimeUnit;
-            this.perServiceTimeUnit = perServiceTimeUnit;
-            this.perSetupTimeUnit = 0.;
-        }
-
         public VehicleCostParams(double fix, double perTimeUnit, double perDistanceUnit, double perWaitingTimeUnit, double perServiceTimeUnit, double perSetupTimeUnit) {
             this.fix = fix;
             this.perTimeUnit = perTimeUnit;
@@ -231,8 +221,8 @@ public class VehicleTypeImpl implements VehicleType {
         }
 
         public VehicleTypeImpl.Builder setCostPerSetupTime(double perSetupTime) {
-            this.perSetupTime = perSetupTime;
-            return this;
+        	this.perSetupTime = perSetupTime;
+        	return this;
         }
 
         /**

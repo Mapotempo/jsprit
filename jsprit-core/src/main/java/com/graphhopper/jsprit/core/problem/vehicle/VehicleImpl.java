@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.problem.vehicle;
 
 import com.graphhopper.jsprit.core.problem.AbstractVehicle;
+import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.Skills;
 import com.graphhopper.jsprit.core.problem.job.Break;
@@ -99,6 +100,11 @@ public class VehicleImpl extends AbstractVehicle {
         public Break getBreak() {
             return null;
         }
+        
+        @Override
+        public Capacity getInitialCapacity() {
+            return null;
+        }
 
         @Override
         public double getCoefSetupTime() {
@@ -141,6 +147,8 @@ public class VehicleImpl extends AbstractVehicle {
         private Location endLocation;
 
         private Break aBreak;
+        
+        private Capacity initCapa = null;
 
         private double coefSetupTime = 1.0;
 
@@ -197,6 +205,11 @@ public class VehicleImpl extends AbstractVehicle {
 
         public Builder setEndLocation(Location endLocation) {
             this.endLocation = endLocation;
+            return this;
+        }
+        
+        public Builder setInitialCapacity(Capacity initialCapacity) {
+            this.initCapa = initialCapacity;
             return this;
         }
 
@@ -311,6 +324,8 @@ public class VehicleImpl extends AbstractVehicle {
     private final Location startLocation;
 
     private final Break aBreak;
+    
+    private final Capacity initCapa;
 
     private final double coefSetupTime;
 
@@ -326,8 +341,9 @@ public class VehicleImpl extends AbstractVehicle {
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
         coefSetupTime = builder.coefSetupTime;
+        initCapa = builder.initCapa;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation, endLocation, earliestDeparture, latestArrival, skills, returnToDepot, endSet));
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation, endLocation, earliestDeparture, latestArrival, skills, returnToDepot, endSet, initCapa));
     }
 
     /**
@@ -435,6 +451,11 @@ public class VehicleImpl extends AbstractVehicle {
         } else if (!type.equals(other.type))
             return false;
         return true;
+    }
+
+    @Override
+    public Capacity getInitialCapacity() {
+        return initCapa;
     }
 
 }
