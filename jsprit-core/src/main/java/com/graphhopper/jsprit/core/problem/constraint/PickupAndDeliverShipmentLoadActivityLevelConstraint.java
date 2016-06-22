@@ -69,27 +69,27 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
             futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXLOAD, Capacity.class);
             if (futureMaxLoad == null) {
                 futureMaxLoad = defaultValue;
-                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
-                    futureMaxLoad = Capacity.addup(futureMaxLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+                if(iFacts.getNewVehicle().getInitialCapacity() != null)
+                    futureMaxLoad = Capacity.addup(futureMaxLoad, iFacts.getNewVehicle().getInitialCapacity());
             }
             futureMinLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MINLOAD, Capacity.class);
             if (futureMinLoad == null) {
                 futureMinLoad = defaultValue;
-                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
-                    futureMinLoad = Capacity.addup(futureMinLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+                if(iFacts.getNewVehicle().getInitialCapacity() != null)
+                    futureMinLoad = Capacity.addup(futureMinLoad, iFacts.getNewVehicle().getInitialCapacity());
             }
         } else {
             futureMaxLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MAXLOAD, Capacity.class);
             if (futureMaxLoad == null) {
                 futureMaxLoad = defaultValue;
-                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
-                    futureMaxLoad = Capacity.addup(futureMaxLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+                if(iFacts.getNewVehicle().getInitialCapacity() != null)
+                    futureMaxLoad = Capacity.addup(futureMaxLoad, iFacts.getNewVehicle().getInitialCapacity());
             }
             futureMinLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MINLOAD, Capacity.class);
             if (futureMinLoad == null) {
                 futureMinLoad = defaultValue;
-                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
-                    futureMinLoad = Capacity.addup(futureMinLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+                if(iFacts.getNewVehicle().getInitialCapacity() != null)
+                    futureMinLoad = Capacity.addup(futureMinLoad, iFacts.getNewVehicle().getInitialCapacity());
             }
         }
         if (newAct instanceof PickupShipment) {
