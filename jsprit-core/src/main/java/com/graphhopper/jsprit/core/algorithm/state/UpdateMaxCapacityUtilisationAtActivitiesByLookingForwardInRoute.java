@@ -19,7 +19,9 @@ package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
@@ -47,6 +49,10 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 
     private Capacity maxLoad;
 
+    private Capacity minLoad;
+
+    private Capacity currentLoad;
+
     private Capacity defaultValue;
 
     public UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute(StateManager stateManager) {
@@ -59,13 +65,22 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
     public void begin(VehicleRoute route) {
         this.route = route;
         maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class);
-        if (maxLoad == null) maxLoad = defaultValue;
+        if (maxLoad == null) {
+            maxLoad = defaultValue;
+            if(route.getVehicle().getInitialCapacity() != null)
+                maxLoad = Capacity.max(maxLoad, route.getVehicle().getInitialCapacity());
+        }
+        minLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class);
+        if (minLoad == null) minLoad = maxLoad;
     }
 
     @Override
     public void visit(TourActivity act) {
-        maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class));
+        currentLoad = stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class);
+        maxLoad = Capacity.max(maxLoad,currentLoad);
         stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MAXLOAD, maxLoad);
+        minLoad = Capacity.min(minLoad, currentLoad);
+        stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MINLOAD, minLoad);
 //		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can in every capacity dimension never be bigger than vehicleCap";
 //		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
     }
