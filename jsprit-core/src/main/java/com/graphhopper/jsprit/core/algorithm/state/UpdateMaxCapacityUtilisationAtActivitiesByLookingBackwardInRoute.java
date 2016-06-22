@@ -36,6 +36,10 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute implement
 
     private Capacity maxLoad;
 
+    private Capacity minLoad;
+
+    private Capacity currentLoad;
+
     private Capacity defaultValue;
 
     public UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute(StateManager stateManager) {
@@ -47,13 +51,26 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute implement
     public void begin(VehicleRoute route) {
         this.route = route;
         maxLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-        if (maxLoad == null) maxLoad = defaultValue;
+        if (maxLoad == null) {
+            maxLoad = defaultValue;
+            if(route.getVehicle().getInitialCapacity() != null)
+                maxLoad = Capacity.max(maxLoad, route.getVehicle().getInitialCapacity());
+        }
+        minLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        if (minLoad == null) {
+            minLoad = defaultValue;
+            if(route.getVehicle().getInitialCapacity() != null)
+                minLoad = Capacity.addup(minLoad, route.getVehicle().getInitialCapacity());
+        }
     }
 
     @Override
     public void visit(TourActivity act) {
-        maxLoad = Capacity.max(maxLoad, stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class));
+        currentLoad = stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class);
+        maxLoad = Capacity.max(maxLoad, currentLoad);
         stateManager.putInternalTypedActivityState(act, InternalStates.PAST_MAXLOAD, maxLoad);
+        minLoad = Capacity.min(minLoad, currentLoad);
+        stateManager.putInternalTypedActivityState(act, InternalStates.PAST_MINLOAD, minLoad);
 //		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
 //		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can never be bigger than vehicleCap";
     }

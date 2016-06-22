@@ -23,6 +23,8 @@ public class InternalStates {
 
     public final static StateId MAXLOAD = new StateFactory.StateIdImpl("max_load", 0);
 
+    public final static StateId MINLOAD = new StateFactory.StateIdImpl("min load", 19);
+
     public final static StateId LOAD = new StateFactory.StateIdImpl("load", 1);
 
     public final static StateId COSTS = new StateFactory.StateIdImpl("costs", 2);
@@ -52,4 +54,8 @@ public class InternalStates {
     public static final StateId EARLIEST_WITHOUT_WAITING = new StateFactory.StateIdImpl("earliest_without_waiting", 14);
 
     public static final StateId SWITCH_NOT_FEASIBLE = new StateFactory.StateIdImpl("switch_not_feasible", 15);
+
+    public static final StateId FUTURE_MINLOAD = new StateFactory.StateIdImpl("future_min_load", 16);
+
+    public static final StateId PAST_MINLOAD = new StateFactory.StateIdImpl("past min load", 20);
 }
