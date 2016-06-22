@@ -54,8 +54,8 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
         Capacity minLoadAtRoute = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.MINLOAD, Capacity.class);
         if (minLoadAtRoute == null) {
             minLoadAtRoute = defaultValue;
-            if(insertionContext.getRoute().getVehicle().getInitialCapacity() != null)
-                minLoadAtRoute = Capacity.addup(minLoadAtRoute, insertionContext.getRoute().getVehicle().getInitialCapacity());
+            if(insertionContext.getNewVehicle().getInitialCapacity() != null)
+                minLoadAtRoute = Capacity.addup(minLoadAtRoute, insertionContext.getNewVehicle().getInitialCapacity());
         }
         if(!insertionContext.getJob().getSize().isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())) {
             return false;
@@ -69,7 +69,7 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
             if (loadAtEnd == null) {
                 loadAtEnd = defaultValue;
                 if(insertionContext.getRoute().getVehicle().getInitialCapacity() != null)
-                    loadAtEnd = Capacity.addup(loadAtEnd, insertionContext.getRoute().getVehicle().getInitialCapacity());
+                    loadAtEnd = Capacity.addup(loadAtEnd, insertionContext.getNewVehicle().getInitialCapacity());
             }
             if (!Capacity.subtract(loadAtEnd, insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue)) {
                 return false;
@@ -79,7 +79,7 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
             if (loadAtEnd == null) {
                 loadAtEnd = defaultValue;
                 if(insertionContext.getRoute().getVehicle().getInitialCapacity() != null)
-                    loadAtEnd = Capacity.addup(loadAtEnd, insertionContext.getRoute().getVehicle().getInitialCapacity());
+                    loadAtEnd = Capacity.addup(loadAtEnd, insertionContext.getNewVehicle().getInitialCapacity());
             }
             if (!Capacity.addup(loadAtEnd, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)) {
                 return false;
