@@ -46,27 +46,42 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
         Capacity futureMaxLoad;
-        Capacity prevMaxLoad;
+        Capacity futureMinLoad;
         if (prevAct instanceof Start) {
             futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXLOAD, Capacity.class);
-            if (futureMaxLoad == null) futureMaxLoad = defaultValue;
-            prevMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-            if (prevMaxLoad == null) prevMaxLoad = defaultValue;
+            if (futureMaxLoad == null) {
+                futureMaxLoad = defaultValue;
+                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
+                    futureMaxLoad = Capacity.addup(futureMaxLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+            }
+            futureMinLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MINLOAD, Capacity.class);
+            if (futureMinLoad == null) {
+                futureMinLoad = defaultValue;
+                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
+                    futureMinLoad = Capacity.addup(futureMinLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+            }
         } else {
             futureMaxLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MAXLOAD, Capacity.class);
-            if (futureMaxLoad == null) futureMaxLoad = defaultValue;
-            prevMaxLoad = stateManager.getActivityState(prevAct, InternalStates.PAST_MAXLOAD, Capacity.class);
-            if (prevMaxLoad == null) prevMaxLoad = defaultValue;
-
+            if (futureMaxLoad == null) {
+                futureMaxLoad = defaultValue;
+                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
+                    futureMaxLoad = Capacity.addup(futureMaxLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+            }
+            futureMinLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MINLOAD, Capacity.class);
+            if (futureMinLoad == null) {
+                futureMinLoad = defaultValue;
+                if(iFacts.getRoute().getVehicle().getInitialCapacity() != null)
+                    futureMinLoad = Capacity.addup(futureMinLoad, iFacts.getRoute().getVehicle().getInitialCapacity());
+            }
         }
         if (newAct instanceof PickupService || newAct instanceof ServiceActivity) {
-            if (!Capacity.addup(newAct.getSize(), futureMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+            if (!Capacity.addup(futureMaxLoad, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
-        if (newAct instanceof DeliverService) {
-            if (!Capacity.addup(Capacity.invert(newAct.getSize()), prevMaxLoad).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
-                return ConstraintsStatus.NOT_FULFILLED_BREAK;
+        if (newAct instanceof DeliverService) {        
+            if (!Capacity.addup(futureMinLoad,newAct.getSize()).isGreaterOrEqual(defaultValue)) {
+                return ConstraintsStatus.NOT_FULFILLED;
             }
         }
         return ConstraintsStatus.FULFILLED;

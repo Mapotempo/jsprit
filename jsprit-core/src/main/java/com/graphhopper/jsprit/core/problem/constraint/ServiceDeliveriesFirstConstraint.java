@@ -24,7 +24,7 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
 
     @Override
     public ConstraintsStatus fulfilled(JobInsertionContext iFacts, TourActivity prevAct, TourActivity newAct, TourActivity nextAct, double prevActDepTime) {
-        if (newAct instanceof PickupService && nextAct instanceof DeliverService) {
+        /*if (newAct instanceof PickupService && nextAct instanceof DeliverService) {
             return ConstraintsStatus.NOT_FULFILLED;
         }
         if (newAct instanceof ServiceActivity && nextAct instanceof DeliverService) {
@@ -48,7 +48,7 @@ public class ServiceDeliveriesFirstConstraint implements HardActivityConstraint 
         }
         if (newAct instanceof DeliverShipment && nextAct instanceof DeliverService) {
             return ConstraintsStatus.NOT_FULFILLED;
-        }
+        }*/
 
         return ConstraintsStatus.FULFILLED;
     }
