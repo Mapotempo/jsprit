@@ -854,7 +854,7 @@ public class SolutionAnalyserTest {
             }
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
-        Assert.assertEquals(20, analyser.getLoadAtEnd(route).get(0), 0.01);
+        Assert.assertEquals(-20, analyser.getLoadAtEnd(route).get(0), 0.01);
     }
 
     @Test
@@ -901,7 +901,7 @@ public class SolutionAnalyserTest {
                 return vrp.getTransportCosts().getTransportCost(from, to, 0., null, null);
             }
         });
-        Assert.assertEquals(20, analyser.getLoadAtEnd().get(0), 0.01);
+        Assert.assertEquals(-20, analyser.getLoadAtEnd().get(0), 0.01);
     }
 
     @Test
@@ -1348,7 +1348,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity atEnd = analyser.getCapacityViolationAtEnd(route);
-        assertEquals(5, atEnd.get(0));
+        assertEquals(0, atEnd.get(0));
     }
 
     @Test
@@ -1540,7 +1540,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getEnd(), route);
-        assertEquals(5, cap.get(0));
+        assertEquals(0, cap.get(0));
     }
 
     @Test
