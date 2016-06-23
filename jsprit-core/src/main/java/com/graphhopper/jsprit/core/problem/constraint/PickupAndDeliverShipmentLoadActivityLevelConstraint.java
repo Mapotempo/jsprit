@@ -103,8 +103,9 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
             }
         }
         if (newAct instanceof DeliverShipment) {
-            if (iFacts.getNewVehicle().getInitialCapacity() != null && !Capacity.addup(futureMinLoad, newAct.getSize()).isGreaterOrEqual(defaultValue) || iFacts.getNewVehicle().getInitialCapacity() == null && !Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions()))
-                return ConstraintsStatus.NOT_FULFILLED_BREAK;
+            if (iFacts.getNewVehicle().getInitialCapacity() != null && !Capacity.addup(futureMinLoad, newAct.getSize()).isGreaterOrEqual(defaultValue) || iFacts.getNewVehicle().getInitialCapacity() == null && !Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+                return ConstraintsStatus.NOT_FULFILLED;
+            }
         }
         return ConstraintsStatus.FULFILLED;
     }
