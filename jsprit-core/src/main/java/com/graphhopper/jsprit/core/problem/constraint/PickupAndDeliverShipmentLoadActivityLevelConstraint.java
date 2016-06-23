@@ -65,7 +65,10 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
         }
         Capacity futureMaxLoad;
         Capacity futureMinLoad;
+        Capacity loadAtPrevAct;
         if (prevAct instanceof Start) {
+            loadAtPrevAct = stateManager.getRouteState(iFacts.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+            if (loadAtPrevAct == null) loadAtPrevAct = defaultValue;
             futureMaxLoad = stateManager.getRouteState(iFacts.getRoute(), InternalStates.MAXLOAD, Capacity.class);
             if (futureMaxLoad == null) {
                 futureMaxLoad = defaultValue;
@@ -79,6 +82,8 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
                     futureMinLoad = Capacity.addup(futureMinLoad, iFacts.getNewVehicle().getInitialCapacity());
             }
         } else {
+            loadAtPrevAct = stateManager.getActivityState(prevAct, InternalStates.LOAD, Capacity.class);
+            if (loadAtPrevAct == null) loadAtPrevAct = defaultValue;
             futureMaxLoad = stateManager.getActivityState(prevAct, InternalStates.FUTURE_MAXLOAD, Capacity.class);
             if (futureMaxLoad == null) {
                 futureMaxLoad = defaultValue;
@@ -93,12 +98,12 @@ public class PickupAndDeliverShipmentLoadActivityLevelConstraint implements Hard
             }
         }
         if (newAct instanceof PickupShipment) {
-            if (!Capacity.addup(futureMaxLoad, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+            if (iFacts.getNewVehicle().getInitialCapacity() != null && !Capacity.addup(futureMaxLoad, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions()) || iFacts.getNewVehicle().getInitialCapacity() == null && !Capacity.addup(loadAtPrevAct, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
         if (newAct instanceof DeliverShipment) {
-            if (!Capacity.addup(futureMinLoad, newAct.getSize()).isGreaterOrEqual(defaultValue))
+            if (iFacts.getNewVehicle().getInitialCapacity() != null && !Capacity.addup(futureMinLoad, newAct.getSize()).isGreaterOrEqual(defaultValue) || iFacts.getNewVehicle().getInitialCapacity() == null && !Capacity.addup(loadAtPrevAct, Capacity.invert(newAct.getSize())).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions()))
                 return ConstraintsStatus.NOT_FULFILLED_BREAK;
         }
         return ConstraintsStatus.FULFILLED;

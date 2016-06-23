@@ -20,6 +20,7 @@ package com.graphhopper.jsprit.core.algorithm.recreate;
 import com.graphhopper.jsprit.core.algorithm.recreate.listener.InsertionListeners;
 import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.AbstractActivity;
+import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
@@ -118,7 +119,8 @@ public class ServiceInsertionAndLoadConstraintsTest {
         Pickup pickup = (Pickup) Pickup.Builder.newInstance("pick").addSizeDimension(0, 15).setLocation(Location.newInstance("0,10")).build();
 
         VehicleType type = VehicleTypeImpl.Builder.newInstance("t").addCapacityDimension(0, 50).setCostPerDistance(1).build();
-        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setType(type).build();
+        Capacity initialLoad = Capacity.Builder.newInstance().addDimension(0, 50).build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setStartLocation(Location.newInstance("0,0")).setInitialCapacity(initialLoad).setType(type).build();
 
         final VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(delivery).addJob(pickup).addVehicle(vehicle).build();
 
