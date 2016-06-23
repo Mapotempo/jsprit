@@ -57,15 +57,17 @@ public class ServiceLoadRouteLevelConstraintTest {
     @Before
     public void doBefore() {
         VehicleType type = mock(VehicleType.class);
-        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 3).addDimension(1, 3).addDimension(2, 3).build());
+        when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 4).addDimension(1, 4).addDimension(2, 4).build());
         vehicle = mock(Vehicle.class);
         when(vehicle.getType()).thenReturn(type);
 
         route = mock(VehicleRoute.class);
+        Capacity initialLoad = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build();
+        Capacity currentLoad = Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 2).addDimension(2, 2).build();
 
-        Capacity currentLoad = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 1).addDimension(2, 1).build();
+        when(vehicle.getInitialCapacity()).thenReturn(initialLoad);
         stateGetter = mock(RouteAndActivityStateGetter.class);
-        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(currentLoad);
+        when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(initialLoad);
         when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class)).thenReturn(currentLoad);
         when(stateGetter.getRouteState(route, InternalStates.MAXLOAD, Capacity.class)).thenReturn(currentLoad);
 
