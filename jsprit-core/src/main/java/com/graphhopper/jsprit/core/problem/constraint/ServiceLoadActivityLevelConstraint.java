@@ -83,7 +83,7 @@ public class ServiceLoadActivityLevelConstraint implements HardActivityConstrain
             }
         }
         if (newAct instanceof PickupService || newAct instanceof ServiceActivity) {
-            if (!Capacity.addup(futureMaxLoad, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
+            if (iFacts.getRoute().getVehicle().getInitialCapacity() != null && !Capacity.addup(futureMaxLoad, newAct.getSize()).isLessOrEqual(iFacts.getNewVehicle().getType().getCapacityDimensions())) {
                 return ConstraintsStatus.NOT_FULFILLED;
             }
         }
