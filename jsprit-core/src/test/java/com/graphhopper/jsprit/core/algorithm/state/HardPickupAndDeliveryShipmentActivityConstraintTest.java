@@ -89,7 +89,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
         PickupService anotherService = (PickupService) vrp.getActivities(s2).get(0);
         PickupShipment pickupShipment = (PickupShipment) vrp.getActivities(shipment).get(0);
 
-        stateManager.putInternalTypedActivityState(pickupService, InternalStates.LOAD, Capacity.Builder.newInstance().addDimension(0, 2).build());
+        stateManager.putInternalTypedActivityState(pickupService, InternalStates.FUTURE_MAXLOAD, Capacity.Builder.newInstance().addDimension(0, 2).build());
 //		when(stateManager.getActivityState(pickupService, StateFactory.LOAD)).thenReturn(StateFactory.createState(2.0));
         assertEquals(ConstraintsStatus.NOT_FULFILLED, constraint.fulfilled(iFacts, pickupService, pickupShipment, anotherService, 0.0));
     }
@@ -101,7 +101,7 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 
         DeliverShipment deliverShipment = (DeliverShipment) vrp.getActivities(shipment).get(1);
 
-        stateManager.putInternalTypedActivityState(pickupService, InternalStates.LOAD, Capacity.Builder.newInstance().addDimension(0, 1).build());
+        stateManager.putInternalTypedActivityState(pickupService, InternalStates.FUTURE_MINLOAD, Capacity.Builder.newInstance().addDimension(0, 1).build());
 //		stateManager.putInternalActivityState(pickupService, StateFactory.LOAD, StateFactory.createState(1));
         assertEquals(ConstraintsStatus.FULFILLED, constraint.fulfilled(iFacts, pickupService, deliverShipment, anotherService, 0.0));
     }
