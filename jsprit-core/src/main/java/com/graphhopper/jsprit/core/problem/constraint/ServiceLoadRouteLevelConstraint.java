@@ -75,7 +75,7 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
                 if(insertionContext.getNewVehicle().getInitialCapacity() != null)
                     loadAtEnd = Capacity.addup(loadAtEnd, insertionContext.getNewVehicle().getInitialCapacity());
             }
-            if (!Capacity.addup(loadAtEnd, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)) {
+            if (!Capacity.addup(loadAtEnd,insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)) {
                 return false;
             }
         } else if (insertionContext.getJob() instanceof Delivery) {
@@ -85,7 +85,12 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
                 if(insertionContext.getNewVehicle().getInitialCapacity() != null)
                     loadAtEnd = Capacity.addup(loadAtEnd, insertionContext.getNewVehicle().getInitialCapacity());
             }
-            if ((insertionContext.getNewVehicle().getInitialCapacity() != null && !Capacity.subtract(loadAtEnd, insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue)) || (insertionContext.getNewVehicle().getInitialCapacity() == null && !Capacity.subtract(maxLoadAtRoute,insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue))) {
+            Capacity loadAtStart = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+            if (loadAtStart == null) {
+                loadAtStart = defaultValue;
+            }
+            if (insertionContext.getNewVehicle().getInitialCapacity() == null && !Capacity.subtract(loadAtEnd,insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue) && !Capacity.addup(insertionContext.getJob().getSize(), loadAtStart).isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())
+                    || insertionContext.getNewVehicle().getInitialCapacity() != null && !Capacity.subtract(loadAtEnd,insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue)) {
                 return false;
             }
         }

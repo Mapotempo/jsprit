@@ -176,7 +176,6 @@ public class InitialRoutesTest {
         vra.setMaxIterations(10);
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
-
         assertFalse(secondActIsPickup(solutions));
 
     }
