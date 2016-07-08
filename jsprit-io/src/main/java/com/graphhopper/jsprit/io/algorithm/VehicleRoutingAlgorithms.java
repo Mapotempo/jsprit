@@ -55,6 +55,8 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.*;
 import com.graphhopper.jsprit.core.util.ActivityTimeTracker;
 import com.graphhopper.jsprit.io.algorithm.VehicleRoutingAlgorithms.TypedMap.*;
+import com.graphhopper.jsprit.core.util.ReverseActivityTimeTracker;
+
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.slf4j.Logger;
@@ -558,6 +560,7 @@ public class VehicleRoutingAlgorithms {
             switchAllowed = Boolean.parseBoolean(switchString);
         } else switchAllowed = true;
         ActivityTimeTracker.ActivityPolicy activityPolicy;
+        ReverseActivityTimeTracker.ReverseActivityPolicy reverseActivityPolicy;
         if (stateManager.timeWindowUpdateIsActivated()) {
             UpdateVehicleDependentPracticalTimeWindows timeWindowUpdater = new UpdateVehicleDependentPracticalTimeWindows(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());
             timeWindowUpdater.setVehiclesToUpdate(new UpdateVehicleDependentPracticalTimeWindows.VehiclesToUpdate() {
@@ -579,10 +582,13 @@ public class VehicleRoutingAlgorithms {
             });
             stateManager.addStateUpdater(timeWindowUpdater);
             activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
+            reverseActivityPolicy = ReverseActivityTimeTracker.ReverseActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS;
         } else {
             activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_ARRIVED;
+            reverseActivityPolicy = ReverseActivityTimeTracker.ReverseActivityPolicy.AS_SOON_AS_ARRIVED;
         }
         stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), activityPolicy, vrp.getActivityCosts()));
+        stateManager.addStateUpdater(new UpdateReverseActivityTimes(vrp.getTransportCosts(), reverseActivityPolicy, vrp.getActivityCosts()));
         stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), vrp.getSoftTimeWindowCost(), stateManager, activityPolicy));
 
         final SolutionCostCalculator costCalculator;

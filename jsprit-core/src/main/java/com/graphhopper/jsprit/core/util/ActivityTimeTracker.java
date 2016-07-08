@@ -85,6 +85,7 @@ public class ActivityTimeTracker implements ActivityVisitor {
         prevAct = route.getStart();
         startAtPrevAct = prevAct.getEndTime();
         actReadyTime = startAtPrevAct;
+        startAtPrevAct = route.getVehicle().getEarliestDeparture();
         actEndTime = startAtPrevAct;
         this.route = route;
         beginFirst = true;
