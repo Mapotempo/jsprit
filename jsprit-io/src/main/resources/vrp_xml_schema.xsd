@@ -111,6 +111,10 @@
                                                                 maxOccurs="1" default="0.0"/>
                                                     <xs:element name="wait" type="xs:decimal" minOccurs="0"
                                                                 maxOccurs="1" default="0.0"/>
+                                                    <xs:element name="early" type="xs:decimal" minOccurs="0"
+                                                                maxOccurs="1" default="0.0"/>
+                                                    <xs:element name="late" type="xs:decimal" minOccurs="0"
+                                                                maxOccurs="1" default="0.0"/>
                                                 </xs:all>
                                             </xs:complexType>
                                         </xs:element>
@@ -161,6 +165,14 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
+                                        <xs:element name="extendedTimeWindows" minOccurs="0" maxOccurs="1">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="extendedTimeWindow" type="extendedTimeWindowType" minOccurs="1"
+                                                                maxOccurs="unbounded"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
                                         <xs:element name="requiredSkills" type="xs:string" minOccurs="0" maxOccurs="1"/>
                                     </xs:all>
                                     <xs:attribute name="id" type="xs:string" use="required"/>
@@ -196,6 +208,14 @@
                                                             </xs:sequence>
                                                         </xs:complexType>
                                                     </xs:element>
+                                                    <xs:element name="extendedTimeWindows" minOccurs="0" maxOccurs="1">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="extendedTimeWindow" type="extendedTimeWindowType" minOccurs="1"
+                                                                            maxOccurs="unbounded"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
                                                 </xs:all>
                                             </xs:complexType>
                                         </xs:element>
@@ -215,6 +235,14 @@
                                                             <xs:sequence>
                                                                 <xs:element name="timeWindow" type="timeWindowType"
                                                                             minOccurs="1" maxOccurs="unbounded"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="extendedTimeWindows" minOccurs="0" maxOccurs="1">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="extendedTimeWindow" type="extendedTimeWindowType" minOccurs="1"
+                                                                            maxOccurs="unbounded"/>
                                                             </xs:sequence>
                                                         </xs:complexType>
                                                     </xs:element>
@@ -373,6 +401,15 @@
         <xs:sequence>
             <xs:element name="start" type="xs:double"/>
             <xs:element name="end" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="extendedTimeWindowType">
+        <xs:sequence>
+            <xs:element name="hardStart" type="xs:double"/>
+            <xs:element name="softStart" type="xs:double"/>
+            <xs:element name="softEnd" type="xs:double"/>
+            <xs:element name="hardEnd" type="xs:double"/>
         </xs:sequence>
     </xs:complexType>
 

@@ -413,6 +413,14 @@ public class VrpXMLReader {
                 }
             }
 
+            //pickup-ex-tw
+            List<HierarchicalConfiguration> pickupExtTWConfigs = shipmentConfig.configurationsAt("pickup.extendedTimeWindows.extendedTimeWindow");
+            if (!pickupTWConfigs.isEmpty()) {
+                for (HierarchicalConfiguration pu_twConfig : pickupExtTWConfigs) {
+                    builder.addPickupTimeWindow(TimeWindow.newInstance(pu_twConfig.getDouble("hardStart"), pu_twConfig.getDouble("softStart"), pu_twConfig.getDouble("softEnd"), pu_twConfig.getDouble("hardEnd")));
+                }
+            }
+
             //delivery location
             //delivery-locationId
             Location.Builder deliveryLocationBuilder = Location.Builder.newInstance();
@@ -444,6 +452,14 @@ public class VrpXMLReader {
             if (!deliveryTWConfigs.isEmpty()) {
                 for (HierarchicalConfiguration dl_twConfig : deliveryTWConfigs) {
                     builder.addDeliveryTimeWindow(TimeWindow.newInstance(dl_twConfig.getDouble("start"), dl_twConfig.getDouble("end")));
+                }
+            }
+
+            //delivery-ext-tw
+            List<HierarchicalConfiguration> deliveryExtTWConfigs = shipmentConfig.configurationsAt("pickup.extendedTimeWindows.extendedTimeWindow");
+            if (!deliveryExtTWConfigs.isEmpty()) {
+                for (HierarchicalConfiguration dl_twConfig : deliveryExtTWConfigs) {
+                    builder.addPickupTimeWindow(TimeWindow.newInstance(dl_twConfig.getDouble("hardStart"), dl_twConfig.getDouble("softStart"), dl_twConfig.getDouble("softEnd"), dl_twConfig.getDouble("hardEnd")));
                 }
             }
 
@@ -534,6 +550,13 @@ public class VrpXMLReader {
                 }
             }
 
+            List<HierarchicalConfiguration> deliveryExtTWConfigs = serviceConfig.configurationsAt("extendedTimeWindows.extendedTimeWindow");
+            if (!deliveryExtTWConfigs.isEmpty()) {
+                for (HierarchicalConfiguration dl_twConfig : deliveryExtTWConfigs) {
+                    builder.addTimeWindow(TimeWindow.newInstance(dl_twConfig.getDouble("hardStart"), dl_twConfig.getDouble("softStart"), dl_twConfig.getDouble("softEnd"), dl_twConfig.getDouble("hardEnd")));
+                }
+            }
+
             //read skills
             String skillString = serviceConfig.getString("requiredSkills");
             if (skillString != null) {
@@ -592,6 +615,16 @@ public class VrpXMLReader {
             if(typeConfig.containsKey("costs.wait")){
                 Double waitC = typeConfig.getDouble("costs.wait");
                 if (waitC != null) typeBuilder.setCostPerWaitingTime(waitC);
+            }
+
+            if(typeConfig.containsKey("costs.early")){
+                Double earlyC = typeConfig.getDouble("costs.early");
+                if (earlyC != null) typeBuilder.setCostPerLowerLatenessTime(earlyC);
+            }
+
+            if(typeConfig.containsKey("costs.late")){
+                Double lateC = typeConfig.getDouble("costs.late");
+                if (lateC != null) typeBuilder.setCostPerUpperLatenessTime(lateC);
             }
 
             if (fix != null) typeBuilder.setFixedCost(fix);

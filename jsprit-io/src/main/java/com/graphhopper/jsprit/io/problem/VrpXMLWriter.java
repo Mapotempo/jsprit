@@ -253,11 +253,21 @@ public class VrpXMLWriter {
 
             Collection<TimeWindow> tws = service.getTimeWindows();
             int index = 0;
+            int indexExt = 0;
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ").duration", service.getServiceDuration());
             for(TimeWindow tw : tws) {
-	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").start", tw.getStart());
-	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").end", tw.getEnd());
-	            ++index;
+                if (tw.getHardStart() == tw.getSoftStart() && tw.getHardEnd() == tw.getSoftEnd()) {
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").start", tw.getStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+                    ++index;
+                }
+                else {
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").extendedTimeWindows.extendedTimeWindow(" + indexExt + ").hardStart", tw.getHardStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").extendedTimeWindows.extendedTimeWindow(" + indexExt + ").softStart", tw.getSoftStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").extendedTimeWindows.extendedTimeWindow(" + indexExt + ").softEnd", tw.getSoftEnd());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").extendedTimeWindows.extendedTimeWindow(" + indexExt + ").hardEnd", tw.getHardEnd());
+                    ++indexExt;
+                }
             }
 
             //skills
@@ -294,12 +304,21 @@ public class VrpXMLWriter {
 
             Collection<TimeWindow> pu_tws = shipment.getPickupTimeWindows();
             int index = 0;
+            int indexExt = 0;
             xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.duration", shipment.getPickupServiceTime());
             for(TimeWindow tw : pu_tws) {
-	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").start", tw.getStart());
-	            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
-	            ++index;
-	        }
+                if (tw.getHardStart() == tw.getSoftStart() && tw.getHardEnd() == tw.getSoftEnd()) {
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").start", tw.getStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+                    ++index;
+                } else {
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").hardStart", tw.getHardStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").softStart", tw.getSoftStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").softEnd", tw.getSoftEnd());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").pickup.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").hardEnd", tw.getHardEnd());
+                    ++indexExt;
+                }
+            }
 
             if (shipment.getDeliveryLocation().getId() != null)
                 xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.location.id", shipment.getDeliveryLocation().getId());
@@ -312,12 +331,22 @@ public class VrpXMLWriter {
             }
 
             Collection<TimeWindow> del_tws = shipment.getDeliveryTimeWindows();
-        	xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.duration", shipment.getDeliveryServiceTime());
-        	index = 0;
+            xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.duration", shipment.getDeliveryServiceTime());
+            index = 0;
+            indexExt = 0;
             for(TimeWindow tw : del_tws) {
-            	xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(" + index + ").start", tw.getStart());
-            	xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
-            	++index;
+                if (tw.getHardStart() == tw.getSoftStart() && tw.getHardEnd() == tw.getSoftEnd()) {
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(" + index + ").start", tw.getStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.timeWindows.timeWindow(" + index + ").end", tw.getEnd());
+                    ++index;
+                }
+                else {
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").hardStart", tw.getHardStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").softStart", tw.getSoftStart());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").softEnd", tw.getSoftEnd());
+                    xmlConfig.setProperty(shipmentPathString + "(" + counter + ").delivery.extendedTimeWindows.extendedTimeWindow(" + indexExt + ").hardEnd", tw.getHardEnd());
+                    ++indexExt;
+                }
             }
 
             for (int i = 0; i < shipment.getSize().getNuOfDimensions(); i++) {
@@ -406,6 +435,8 @@ public class VrpXMLWriter {
             xmlConfig.setProperty(typePathString + "(" + typeCounter + ").costs.time", type.getVehicleCostParams().perTransportTimeUnit);
             xmlConfig.setProperty(typePathString + "(" + typeCounter + ").costs.service", type.getVehicleCostParams().perServiceTimeUnit);
             xmlConfig.setProperty(typePathString + "(" + typeCounter + ").costs.wait", type.getVehicleCostParams().perWaitingTimeUnit);
+            xmlConfig.setProperty(typePathString + "(" + typeCounter + ").costs.early", type.getVehicleCostParams().perLowerLatenessTimeUnit);
+            xmlConfig.setProperty(typePathString + "(" + typeCounter + ").costs.late", type.getVehicleCostParams().perUpperLatenessTimeUnit);
             typeCounter++;
         }
 
