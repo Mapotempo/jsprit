@@ -1485,7 +1485,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(4), route);
-        assertEquals(15, cap.get(0));
+        assertEquals(0, cap.get(0));
     }
 
     @Test
@@ -1517,7 +1517,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(6), route);
-        assertEquals(10, cap.get(0));
+        assertEquals(0, cap.get(0));
     }
 
     @Test
@@ -1549,7 +1549,7 @@ public class SolutionAnalyserTest {
         });
         VehicleRoute route = solution.getRoutes().iterator().next();
         Capacity cap = analyser.getCapacityViolationAfterActivity(route.getActivities().get(8), route);
-        assertEquals(5, cap.get(0));
+        assertEquals(0, cap.get(0));
     }
 
     @Test

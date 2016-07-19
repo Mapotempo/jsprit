@@ -45,7 +45,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final Capacity initCapa;
     public Double maximumRouteDuration = null;
 
-    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, List<Skills> alternativeSkills, boolean returnToDepot, Capacity initCapa, double maximumRouteDuration) {
+    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, List<Skills> alternativeSkills, boolean returnToDepot, Capacity initCapa, Double maximumRouteDuration) {
         super();
         this.type = typeId;
         this.startLocation = startLocation;
