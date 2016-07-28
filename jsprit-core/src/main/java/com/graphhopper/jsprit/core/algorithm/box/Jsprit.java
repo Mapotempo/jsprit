@@ -395,7 +395,7 @@ public class Jsprit {
             noiseConfigurator = noiseMaker;
         }
 
-        RuinRadial radial = new RuinRadial(vrp, vrp.getJobs().size(), jobNeighborhoods);
+        RuinRadial radial = new RuinRadial(vrp, stateManager, vrp.getJobs().size(), jobNeighborhoods);
         radial.setRandom(random);
         radial.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RADIAL_MIN_SHARE.toString())),
@@ -403,7 +403,7 @@ public class Jsprit {
                 random)
         );
 
-        final RuinRandom random_for_regret = new RuinRandom(vrp, 0.5);
+        final RuinRandom random_for_regret = new RuinRandom(vrp, stateManager, 0.5);
         random_for_regret.setRandom(random);
         random_for_regret.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RANDOM_REGRET_MIN_SHARE.toString())),
@@ -411,7 +411,7 @@ public class Jsprit {
                 random)
         );
 
-        final RuinRandom random_for_best = new RuinRandom(vrp, 0.5);
+        final RuinRandom random_for_best = new RuinRandom(vrp, stateManager, 0.5);
         random_for_best.setRandom(random);
         random_for_best.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.RANDOM_BEST_MIN_SHARE.toString())),
@@ -419,7 +419,7 @@ public class Jsprit {
                 random)
         );
 
-        final RuinWorst worst = new RuinWorst(vrp, (int) (vrp.getJobs().values().size() * 0.5));
+        final RuinWorst worst = new RuinWorst(vrp, stateManager, (int) (vrp.getJobs().values().size() * 0.5));
         worst.setRandom(random);
         worst.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),
@@ -441,7 +441,7 @@ public class Jsprit {
             }
         };
 
-        final RuinClusters clusters = new RuinClusters(vrp, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
+        final RuinClusters clusters = new RuinClusters(vrp, stateManager, (int) (vrp.getJobs().values().size() * 0.5), jobNeighborhoods);
         clusters.setRandom(random);
         clusters.setRuinShareFactory(new RuinShareFactoryImpl(
                 toInteger(properties.getProperty(Parameter.WORST_MIN_SHARE.toString())),

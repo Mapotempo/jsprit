@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -41,15 +42,18 @@ public final class RuinRadialMultipleCenters extends AbstractRuinStrategy {
 
     private VehicleRoutingProblem vrp;
 
+    private StateManager stateManager;
+
     private JobNeighborhoods jobNeighborhoods;
 
     private final int noJobsToMemorize;
 
     private int noCenters = 1;
 
-    public RuinRadialMultipleCenters(VehicleRoutingProblem vrp, int neighborhoodSize, JobDistance jobDistance) {
-        super(vrp);
+    public RuinRadialMultipleCenters(VehicleRoutingProblem vrp, StateManager stateManager, int neighborhoodSize, JobDistance jobDistance) {
+        super(vrp, stateManager);
         this.vrp = vrp;
+        this.stateManager = stateManager;
         noJobsToMemorize = neighborhoodSize;
         ruinShareFactory = new RuinShareFactory() {
 

@@ -19,9 +19,7 @@ package com.graphhopper.jsprit.core.algorithm.state;
 
 import com.graphhopper.jsprit.core.problem.Capacity;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ReverseActivityVisitor;
-import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 
 /**
@@ -68,16 +66,15 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
         if (maxLoad == null) {
             maxLoad = defaultValue;
             if(route.getVehicle().getInitialCapacity() != null)
-                maxLoad = Capacity.max(maxLoad, route.getVehicle().getInitialCapacity());
+                maxLoad = Capacity.addup(maxLoad, route.getVehicle().getInitialCapacity());
         }
-        minLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_END, Capacity.class);
-        if (minLoad == null) minLoad = maxLoad;
+        minLoad = maxLoad;
     }
 
     @Override
     public void visit(TourActivity act) {
         currentLoad = stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class);
-        maxLoad = Capacity.max(maxLoad,currentLoad);
+        maxLoad = Capacity.max(maxLoad, currentLoad);
         stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MAXLOAD, maxLoad);
         minLoad = Capacity.min(minLoad, currentLoad);
         stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MINLOAD, minLoad);

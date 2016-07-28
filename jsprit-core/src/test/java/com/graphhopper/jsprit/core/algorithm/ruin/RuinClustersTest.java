@@ -19,6 +19,7 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.AvgServiceAndShipmentDistance;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -60,7 +61,8 @@ public class RuinClustersTest {
 
         JobNeighborhoods n = new JobNeighborhoodsFactory().createNeighborhoods(vrp, new AvgServiceAndShipmentDistance(vrp.getTransportCosts()));
         n.initialise();
-        RuinClusters rc = new RuinClusters(vrp, 5, n);
+        final StateManager stateManager = new StateManager(vrp);
+        RuinClusters rc = new RuinClusters(vrp, stateManager, 5, n);
         Random r = RandomNumberGeneration.newInstance();
         rc.setRandom(r);
         Collection<Job> ruined = rc.ruinRoutes(Arrays.asList(vr1, vr2));

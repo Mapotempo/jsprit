@@ -241,7 +241,7 @@ public class ServiceLoadRouteLevelConstraintTest {
         when(service.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
 
         Capacity atBeginning = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
-        Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
+        Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
 
         RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
         when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
@@ -255,6 +255,7 @@ public class ServiceLoadRouteLevelConstraintTest {
         VehicleType type = mock(VehicleType.class);
         when(type.getCapacityDimensions()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).addDimension(1, 1).addDimension(2, 2).build());
         Vehicle vehicle = mock(Vehicle.class);
+        when(vehicle.getInitialCapacity()).thenReturn(atBeginning);
         when(vehicle.getType()).thenReturn(type);
 
         when(iContext.getNewVehicle()).thenReturn(vehicle);
@@ -297,7 +298,7 @@ public class ServiceLoadRouteLevelConstraintTest {
         when(service.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 2).build());
 
         Capacity atBeginning = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
-        Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 0).addDimension(1, 0).addDimension(2, 0).build();
+        Capacity atEnd = Capacity.Builder.newInstance().addDimension(0, 1).addDimension(1, 2).addDimension(2, 1).build();
 
         RouteAndActivityStateGetter stateGetter = mock(RouteAndActivityStateGetter.class);
         when(stateGetter.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class)).thenReturn(atBeginning);
@@ -332,6 +333,7 @@ public class ServiceLoadRouteLevelConstraintTest {
         VehicleRoute route = VehicleRoute.Builder.newInstance(vehicle).setJobActivityFactory(vrp.getJobActivityFactory()).addService(pickup2).build();
 
         stateManager.informInsertionStarts(Arrays.asList(route), null);
+        stateManager.reCalculateStates(route);
         JobInsertionContext iContext = new JobInsertionContext(route, pickup, vehicle, null, 0.);
         assertFalse(new ServiceLoadRouteLevelConstraint(stateManager).fulfilled(iContext));
     }

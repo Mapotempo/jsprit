@@ -18,6 +18,7 @@
 
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -50,7 +51,8 @@ public class RuinWorstTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
             .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
-        RuinWorst worst = new RuinWorst(vrp, 1);
+        final StateManager stateManager = new StateManager(vrp);
+        RuinWorst worst = new RuinWorst(vrp, stateManager, 1);
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
@@ -69,7 +71,8 @@ public class RuinWorstTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
             .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
-        RuinWorst worst = new RuinWorst(vrp, 1);
+        final StateManager stateManager = new StateManager(vrp);
+        RuinWorst worst = new RuinWorst(vrp, stateManager, 1);
 
         VehicleRoute route = VehicleRoute.Builder.newInstance(v).addService(s1).addService(s2).addService(s3).setJobActivityFactory(vrp.getJobActivityFactory()).build();
         Collection<Job> unassigned = worst.ruinRoutes(Arrays.asList(route));
@@ -88,7 +91,8 @@ public class RuinWorstTest {
         VehicleImpl v = VehicleImpl.Builder.newInstance("v")
             .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
-        RuinWorst worst = new RuinWorst(vrp, 1);
+        final StateManager stateManager = new StateManager(vrp);
+        RuinWorst worst = new RuinWorst(vrp, stateManager, 1);
         worst.setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {
@@ -120,7 +124,8 @@ public class RuinWorstTest {
             .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).build();
-        RuinWorst worst = new RuinWorst(vrp, 1);
+        final StateManager stateManager = new StateManager(vrp);
+        RuinWorst worst = new RuinWorst(vrp, stateManager, 1);
         worst.setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {
@@ -155,7 +160,8 @@ public class RuinWorstTest {
             .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).addVehicle(v2).build();
-        RuinWorst worst = new RuinWorst(vrp, 1);
+        final StateManager stateManager = new StateManager(vrp);
+        RuinWorst worst = new RuinWorst(vrp, stateManager, 1);
         worst.setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {
@@ -192,7 +198,8 @@ public class RuinWorstTest {
             .setStartLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).setReturnToDepot(true).build();
         VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance()
             .addJob(shipment).addJob(s1).addJob(s2).addJob(s3).addVehicle(v).addVehicle(v2).build();
-        RuinWorst worst = new RuinWorst(vrp, 1);
+        final StateManager stateManager = new StateManager(vrp);
+        RuinWorst worst = new RuinWorst(vrp, stateManager, 1);
         worst.setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {

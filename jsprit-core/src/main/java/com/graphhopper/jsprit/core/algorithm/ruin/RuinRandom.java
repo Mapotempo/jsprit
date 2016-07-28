@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -42,6 +43,8 @@ public final class RuinRandom extends AbstractRuinStrategy {
 
     private VehicleRoutingProblem vrp;
 
+    private StateManager stateManager;
+
     private double fractionOfAllNodes2beRuined;
 
     /**
@@ -50,9 +53,10 @@ public final class RuinRandom extends AbstractRuinStrategy {
      * @param vrp
      * @param fraction which is the fraction of total c
      */
-    public RuinRandom(VehicleRoutingProblem vrp, double fraction) {
-        super(vrp);
+    public RuinRandom(VehicleRoutingProblem vrp, StateManager stateManager, double fraction) {
+        super(vrp, stateManager);
         this.vrp = vrp;
+        this.stateManager = stateManager;
         this.fractionOfAllNodes2beRuined = fraction;
         setRuinShareFactory(new RuinShareFactory() {
             @Override

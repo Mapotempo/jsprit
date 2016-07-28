@@ -155,8 +155,8 @@ public class BuildAlgorithmFromScratch {
 		/*
          * ruin strategies
 		 */
-        RuinStrategy randomRuin = new RandomRuinStrategyFactory(0.5).createStrategy(vrp);
-        RuinStrategy radialRuin = new RadialRuinStrategyFactory(0.3, new AvgServiceAndShipmentDistance(vrp.getTransportCosts())).createStrategy(vrp);
+        RuinStrategy randomRuin = new RandomRuinStrategyFactory(0.5).createStrategy(vrp, stateManager);
+        RuinStrategy radialRuin = new RadialRuinStrategyFactory(0.3, new AvgServiceAndShipmentDistance(vrp.getTransportCosts())).createStrategy(vrp, stateManager);
 
 		/*
          * objective function

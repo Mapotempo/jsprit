@@ -17,10 +17,11 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 
 public interface RuinStrategyFactory {
 
-    public RuinStrategy createStrategy(VehicleRoutingProblem vrp);
+    public RuinStrategy createStrategy(VehicleRoutingProblem vrp, StateManager stateManager);
 
 }

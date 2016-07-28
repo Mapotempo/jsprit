@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.algorithm.listener.IterationStartsListener;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
@@ -68,6 +69,7 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 
     private VehicleRoutingProblem vrp;
 
+    private StateManager stateManager;
 
     private JobNeighborhoods jobNeighborhoods;
 
@@ -77,8 +79,9 @@ public final class RuinClusters extends AbstractRuinStrategy implements Iteratio
 
     private double epsFactor = 0.8;
 
-    public RuinClusters(VehicleRoutingProblem vrp, final int initialNumberJobsToRemove, JobNeighborhoods jobNeighborhoods) {
-        super(vrp);
+    public RuinClusters(VehicleRoutingProblem vrp, StateManager stateManager, final int initialNumberJobsToRemove, JobNeighborhoods jobNeighborhoods) {
+        super(vrp, stateManager);
+        this.stateManager = stateManager;
         this.vrp = vrp;
         setRuinShareFactory(new RuinShareFactory() {
             @Override

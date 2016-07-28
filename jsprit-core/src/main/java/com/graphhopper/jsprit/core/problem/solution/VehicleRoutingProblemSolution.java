@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.problem.solution;
 
 import com.graphhopper.jsprit.core.problem.job.Job;
+import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 
 import java.util.ArrayList;
@@ -117,6 +118,16 @@ public class VehicleRoutingProblemSolution {
      */
     public Collection<Job> getUnassignedJobs() {
         return unassignedJobs;
+    }
+
+    public Collection<Job> getUnassignedDeliveries() {
+        Collection<Job> unassignedDeliveries = new ArrayList<Job>();
+        for(Job job : unassignedJobs) {
+            if(!(job instanceof Pickup)) {
+                unassignedDeliveries.add(job);
+            }
+        }
+        return unassignedDeliveries;
     }
 
     @Override

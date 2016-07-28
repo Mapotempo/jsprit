@@ -587,6 +587,8 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     @Override
     public void ruinStarts(Collection<VehicleRoute> routes) {
+        for(VehicleRoute route : routes)
+            reCalculateStates(route);
         ruinListeners.ruinStarts(routes);
     }
 
