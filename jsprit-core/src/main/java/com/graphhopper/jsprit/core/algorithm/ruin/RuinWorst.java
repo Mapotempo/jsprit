@@ -46,6 +46,8 @@ public final class RuinWorst extends AbstractRuinStrategy {
 
     private VehicleRoutingProblem vrp;
 
+    private StateManager stateManager;
+
     private SetupTime setupCosts = new SetupTime();
 
     private StateManager stateManager;
