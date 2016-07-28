@@ -170,59 +170,59 @@ public class LoadStateTest {
     pickup 10 and deliver 5
      */
     @Test
-    public void when_pdroute_loadAtEndShouldBe10() {
+    public void when_pdroute_loadAtEndShouldBe5() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity routeState = stateManager.getRouteState(pickup_delivery_route, InternalStates.LOAD_AT_END, Capacity.class);
-        assertEquals(10, routeState.get(0));
-    }
-
-    @Test
-    public void when_pdroute_loadAtBeginningShouldBe5() {
-        stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
-        Capacity routeState = stateManager.getRouteState(pickup_delivery_route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
         assertEquals(5, routeState.get(0));
     }
 
     @Test
-    public void when_pdroute_loadAtAct1ShouldBe15() {
+    public void when_pdroute_loadAtBeginningShouldBe0() {
+        stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
+        Capacity routeState = stateManager.getRouteState(pickup_delivery_route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+        assertEquals(0, routeState.get(0));
+    }
+
+    @Test
+    public void when_pdroute_loadAtAct1ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(0), InternalStates.LOAD, Capacity.class);
-        assertEquals(15, atAct1.get(0));
+        assertEquals(10, atAct1.get(0));
     }
 
     @Test
-    public void when_pdroute_loadAtAct2ShouldBe10() {
+    public void when_pdroute_loadAtAct2ShouldBe5() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(1), InternalStates.LOAD, Capacity.class);
-        assertEquals(10, atAct2.get(0));
+        assertEquals(5, atAct2.get(0));
     }
 
     @Test
-    public void when_pdroute_futureMaxLoatAtAct1ShouldBe15() {
+    public void when_pdroute_futureMaxLoatAtAct1ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(0), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(15, atAct1.get(0));
+        assertEquals(10, atAct1.get(0));
     }
 
     @Test
-    public void when_pdroute_futureMaxLoatAtAct2ShouldBe10() {
+    public void when_pdroute_futureMaxLoatAtAct2ShouldBe5() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(1), InternalStates.FUTURE_MAXLOAD, Capacity.class);
-        assertEquals(10, atAct2.get(0));
+        assertEquals(5, atAct2.get(0));
     }
 
     @Test
-    public void when_pdroute_pastMaxLoatAtAct1ShouldBe15() {
+    public void when_pdroute_pastMaxLoatAtAct1ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct1 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(0), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15, atAct1.get(0));
+        assertEquals(10, atAct1.get(0));
     }
 
     @Test
-    public void when_pdroute_pastMaxLoatAtAct2ShouldBe15() {
+    public void when_pdroute_pastMaxLoatAtAct2ShouldBe10() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Capacity atAct2 = stateManager.getActivityState(pickup_delivery_route.getActivities().get(1), InternalStates.PAST_MAXLOAD, Capacity.class);
-        assertEquals(15, atAct2.get(0));
+        assertEquals(10, atAct2.get(0));
     }
 
     /*

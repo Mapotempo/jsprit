@@ -58,16 +58,11 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
             minLoadAtRoute = defaultValue;
             if(insertionContext.getNewVehicle().getInitialCapacity() != null)
                 minLoadAtRoute = Capacity.addup(minLoadAtRoute, insertionContext.getNewVehicle().getInitialCapacity());
-            else if(stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class) != null)
-                minLoadAtRoute = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
         }
         if(!insertionContext.getJob().getSize().isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())) {
             return false;
         }
         Capacity capacityDimensions = insertionContext.getNewVehicle().getType().getCapacityDimensions();
-        if (!maxLoadAtRoute.isLessOrEqual(capacityDimensions) || !minLoadAtRoute.isGreaterOrEqual(defaultValue)) {
-            return false;
-        }
         if (insertionContext.getJob() instanceof Pickup || (insertionContext.getJob() instanceof Service && !(insertionContext.getJob() instanceof Delivery))) {
             Capacity loadAtEnd = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_END, Capacity.class);
             if (loadAtEnd == null) {
@@ -75,7 +70,14 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
                 if(insertionContext.getNewVehicle().getInitialCapacity() != null)
                     loadAtEnd = Capacity.addup(loadAtEnd, insertionContext.getNewVehicle().getInitialCapacity());
             }
-            if (!Capacity.addup(loadAtEnd,insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)) {
+            Capacity loadAtStart = stateManager.getRouteState(insertionContext.getRoute(), InternalStates.LOAD_AT_BEGINNING, Capacity.class);
+            if (loadAtStart == null) {
+                loadAtStart = defaultValue;
+            }
+            //System.out.println(loadAtStart + " " +loadAtEnd + " " + insertionContext.getJob().getSize() + " " + capacityDimensions);
+            if (insertionContext.getNewVehicle().getInitialCapacity() != null && !Capacity.addup(loadAtEnd, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)
+                    || insertionContext.getNewVehicle().getInitialCapacity() == null && !Capacity.addup(loadAtEnd,insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)
+                                                                                    && !Capacity.subtract(loadAtStart, insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue)) {
                 return false;
             }
         } else if (insertionContext.getJob() instanceof Delivery) {
@@ -89,8 +91,10 @@ public class ServiceLoadRouteLevelConstraint implements HardRouteConstraint {
             if (loadAtStart == null) {
                 loadAtStart = defaultValue;
             }
-            if (insertionContext.getNewVehicle().getInitialCapacity() == null && !Capacity.subtract(loadAtEnd,insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue) && !Capacity.addup(insertionContext.getJob().getSize(), loadAtStart).isLessOrEqual(insertionContext.getNewVehicle().getType().getCapacityDimensions())
-                    || insertionContext.getNewVehicle().getInitialCapacity() != null && !Capacity.subtract(loadAtEnd,insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue)) {
+            if (insertionContext.getNewVehicle().getInitialCapacity() != null && !Capacity.subtract(loadAtEnd, insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue)
+                    || insertionContext.getNewVehicle().getInitialCapacity() == null && (!Capacity.addup(loadAtStart, insertionContext.getJob().getSize()).isLessOrEqual(capacityDimensions)
+                                                                                   && !Capacity.subtract(loadAtEnd, insertionContext.getJob().getSize()).isGreaterOrEqual(defaultValue))) {
+
                 return false;
             }
         }

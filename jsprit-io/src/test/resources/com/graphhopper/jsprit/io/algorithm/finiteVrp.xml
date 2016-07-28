@@ -29,10 +29,11 @@
     <vehicles>
         <vehicle>
             <id>v1</id>
-            <location>
+            <startLocation>
                 <id>depotLoc2</id>
                 <coord x="100.0" y="100.0"/>
-            </location>
+            </startLocation>
+            <returnToDepot>true</returnToDepot>
             <typeId>vehType</typeId>
             <timeSchedule>
                 <start>0.0</start>
@@ -41,10 +42,11 @@
         </vehicle>
         <vehicle>
             <id>v2</id>
-            <location>
+            <startLocation>
                 <id>depotLoc</id>
                 <coord x="10.0" y="100.0"/>
-            </location>
+            </startLocation>
+            <returnToDepot>true</returnToDepot>
             <typeId>vehType2</typeId>
             <timeSchedule>
                 <start>0.0</start>

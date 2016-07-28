@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 
 public class RadialRuinStrategyFactory implements RuinStrategyFactory {
@@ -33,8 +34,8 @@ public class RadialRuinStrategyFactory implements RuinStrategyFactory {
     }
 
     @Override
-    public RuinStrategy createStrategy(VehicleRoutingProblem vrp) {
-        return new RuinRadial(vrp, fraction, jobDistance);
+    public RuinStrategy createStrategy(VehicleRoutingProblem vrp, StateManager stateManager) {
+        return new RuinRadial(vrp, stateManager, fraction, jobDistance);
     }
 
 }

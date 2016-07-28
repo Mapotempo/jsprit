@@ -66,8 +66,8 @@ public class BuildCVRPAlgoFromScratch_IT {
 
         InsertionStrategy bestInsertion = new BestInsertionBuilder(vrp, fleetManager, stateManager, cManager).build();
 
-        RuinStrategy radial = new RadialRuinStrategyFactory(0.15, new AvgServiceDistance(vrp.getTransportCosts())).createStrategy(vrp);
-        RuinStrategy random = new RandomRuinStrategyFactory(0.25).createStrategy(vrp);
+        RuinStrategy radial = new RadialRuinStrategyFactory(0.15, new AvgServiceDistance(vrp.getTransportCosts())).createStrategy(vrp, stateManager);
+        RuinStrategy random = new RandomRuinStrategyFactory(0.25).createStrategy(vrp, stateManager);
 
         SolutionCostCalculator solutionCostCalculator = new SolutionCostCalculator() {
 

@@ -241,6 +241,8 @@ public class LoadConstraintTest {
         when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 6).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
 
+        stateManager.reCalculateStates(serviceRoute);
+
         JobInsertionContext context = new JobInsertionContext(serviceRoute, s, serviceRoute.getVehicle(), null, 0.);
         assertFalse(loadconstraint.fulfilled(context));
     }
@@ -285,13 +287,14 @@ public class LoadConstraintTest {
 
     @Test
     public void whenPDRouteRouteAndNewDeliveryDoesNotFitIn_itShouldReturnNotFulfilled() {
+        // We cannot know at this level
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
         when(s.getSize()).thenReturn(Capacity.Builder.newInstance().addDimension(0, 16).build());
         ServiceLoadRouteLevelConstraint loadconstraint = new ServiceLoadRouteLevelConstraint(stateManager);
 
         JobInsertionContext context = new JobInsertionContext(pickup_delivery_route, s, serviceRoute.getVehicle(), null, 0.);
-        assertFalse(loadconstraint.fulfilled(context));
+        assertTrue(loadconstraint.fulfilled(context));
     }
 
     /*
@@ -352,7 +355,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldNotFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
         when(s.getSize()).thenReturn(newSize);
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -368,7 +371,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldNotFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
         when(s.getSize()).thenReturn(newSize);
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -384,7 +387,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newPickupShouldNotFitInBetweenAct2AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Pickup s = mock(Pickup.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
+        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 16).build();
         when(s.getSize()).thenReturn(newSize);
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -420,7 +423,7 @@ public class LoadConstraintTest {
     public void whenPDRoute_newDeliveryShouldNotFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Delivery s = mock(Delivery.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 16).build();
+        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 21).build();
         when(s.getSize()).thenReturn(newSize);
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 
@@ -554,7 +557,7 @@ public class LoadConstraintTest {
     public void whenPDRouteAndNewServiceDoesNotFitInBetweenAc1AndAct2_itShouldReturnFulfilled() {
         stateManager.informInsertionStarts(Arrays.asList(pickup_delivery_route), Collections.<Job>emptyList());
         Service s = mock(Service.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
+        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 16).build();
         when(s.getSize()).thenReturn(newSize);
         ServiceLoadActivityLevelConstraint loadConstraint = new ServiceLoadActivityLevelConstraint(stateManager);
 

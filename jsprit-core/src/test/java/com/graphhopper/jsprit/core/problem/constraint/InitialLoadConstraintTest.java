@@ -775,7 +775,7 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenStartAndAct1() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 15).build();
+        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 2).build();
         when(s.getSize()).thenReturn(newSize);
 
         JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);

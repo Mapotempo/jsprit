@@ -28,6 +28,7 @@ import com.graphhopper.jsprit.core.problem.misc.JobInsertionContext;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupService;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupShipment;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -55,6 +56,8 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
 
     VehicleRoutingProblem vrp;
 
+    VehicleRoute route;
+
     @Before
     public void doBefore() {
         s1 = Service.Builder.newInstance("s1").setLocation(Location.newInstance("loc")).build();
@@ -69,8 +72,8 @@ public class HardPickupAndDeliveryShipmentActivityConstraintTest {
         vrp = VehicleRoutingProblem.Builder.newInstance().addJob(s1).addJob(s2).addJob(shipment).addVehicle(vehicle).build();
 
         stateManager = new StateManager(vrp);
-
-        iFacts = new JobInsertionContext(null, null, vehicle, null, 0.0);
+        route = VehicleRoute.emptyRoute();
+        iFacts = new JobInsertionContext(route, null, vehicle, null, 0.0);
         constraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
     }
 
