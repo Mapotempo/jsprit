@@ -909,7 +909,7 @@ public class VehicleRoutingAlgorithms {
         RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
         RuinStrategy ruin = definedClasses.get(stratKey);
         if (ruin == null) {
-            ruin = new RadialRuinStrategyFactory(shareToRuin, jobDistance).createStrategy(vrp);
+            ruin = new RadialRuinStrategyFactory(shareToRuin, jobDistance).createStrategy(vrp, routeStates);
             definedClasses.put(stratKey, ruin);
         }
         return ruin;
@@ -930,7 +930,7 @@ public class VehicleRoutingAlgorithms {
         RuinStrategyKey stratKey = new RuinStrategyKey(modKey);
         RuinStrategy ruin = definedClasses.get(stratKey);
         if (ruin == null) {
-            ruin = new RandomRuinStrategyFactory(shareToRuin).createStrategy(vrp);
+            ruin = new RandomRuinStrategyFactory(shareToRuin).createStrategy(vrp, routeStates);
             definedClasses.put(stratKey, ruin);
         }
         return ruin;

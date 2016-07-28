@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.driver.DriverImpl;
 import com.graphhopper.jsprit.core.problem.job.Job;
@@ -43,6 +44,8 @@ public final class RuinWorst extends AbstractRuinStrategy {
 
     private VehicleRoutingProblem vrp;
 
+    private StateManager stateManager;
+
     private NoiseMaker noiseMaker = new NoiseMaker() {
 
         @Override
@@ -55,9 +58,10 @@ public final class RuinWorst extends AbstractRuinStrategy {
         this.noiseMaker = noiseMaker;
     }
 
-    public RuinWorst(VehicleRoutingProblem vrp, final int initialNumberJobsToRemove) {
-        super(vrp);
+    public RuinWorst(VehicleRoutingProblem vrp, StateManager stateManager, final int initialNumberJobsToRemove) {
+        super(vrp, stateManager);
         this.vrp = vrp;
+        this.stateManager = stateManager;
         setRuinShareFactory(new RuinShareFactory() {
             @Override
             public int createNumberToBeRemoved() {

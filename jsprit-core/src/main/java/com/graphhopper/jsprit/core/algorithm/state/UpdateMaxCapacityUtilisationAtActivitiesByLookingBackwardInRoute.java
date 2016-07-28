@@ -54,14 +54,9 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingBackwardInRoute implement
         if (maxLoad == null) {
             maxLoad = defaultValue;
             if(route.getVehicle().getInitialCapacity() != null)
-                maxLoad = Capacity.max(maxLoad, route.getVehicle().getInitialCapacity());
+                maxLoad = Capacity.addup(maxLoad, route.getVehicle().getInitialCapacity());
         }
-        minLoad = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
-        if (minLoad == null) {
-            minLoad = defaultValue;
-            if(route.getVehicle().getInitialCapacity() != null)
-                minLoad = Capacity.addup(minLoad, route.getVehicle().getInitialCapacity());
-        }
+        minLoad = maxLoad;
     }
 
     @Override

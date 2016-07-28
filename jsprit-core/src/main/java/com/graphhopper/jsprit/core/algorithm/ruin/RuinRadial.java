@@ -18,6 +18,7 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
 import com.graphhopper.jsprit.core.algorithm.ruin.distance.JobDistance;
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
@@ -41,6 +42,8 @@ public final class RuinRadial extends AbstractRuinStrategy {
 
     private VehicleRoutingProblem vrp;
 
+    private StateManager stateManager;
+
     private JobNeighborhoods jobNeighborhoods;
 
     private final int noJobsToMemorize;
@@ -52,9 +55,10 @@ public final class RuinRadial extends AbstractRuinStrategy {
      * @param fraction2beRemoved i.e. the share of jobs to be removed (relative to the total number of jobs in vrp)
      * @param jobDistance        i.e. a measure to define the distance between two jobs and whether they are located close or distant to eachother
      */
-    public RuinRadial(VehicleRoutingProblem vrp, double fraction2beRemoved, JobDistance jobDistance) {
-        super(vrp);
+    public RuinRadial(VehicleRoutingProblem vrp, StateManager stateManager, double fraction2beRemoved, JobDistance jobDistance) {
+        super(vrp, stateManager);
         this.vrp = vrp;
+        this.stateManager = stateManager;
         noJobsToMemorize = (int) Math.ceil(vrp.getJobs().values().size() * fraction2beRemoved);
         ruinShareFactory = new RuinShareFactory() {
 
@@ -70,9 +74,10 @@ public final class RuinRadial extends AbstractRuinStrategy {
         logger.debug("initialise {}", this);
     }
 
-    public RuinRadial(VehicleRoutingProblem vrp, int noJobs2beRemoved, JobDistance jobDistance) {
-        super(vrp);
+    public RuinRadial(VehicleRoutingProblem vrp, StateManager stateManager, int noJobs2beRemoved, JobDistance jobDistance) {
+        super(vrp, stateManager);
         this.vrp = vrp;
+        this.stateManager = stateManager;
 //		this.fractionOfAllNodes2beRuined = fraction2beRemoved;
         noJobsToMemorize = noJobs2beRemoved;
         ruinShareFactory = new RuinShareFactory() {
@@ -89,9 +94,10 @@ public final class RuinRadial extends AbstractRuinStrategy {
         logger.debug("initialise {}", this);
     }
 
-    public RuinRadial(VehicleRoutingProblem vrp, int noJobs2beRemoved, JobNeighborhoods neighborhoods) {
-        super(vrp);
+    public RuinRadial(VehicleRoutingProblem vrp, StateManager stateManager, int noJobs2beRemoved, JobNeighborhoods neighborhoods) {
+        super(vrp, stateManager);
         this.vrp = vrp;
+        this.stateManager = stateManager;
         noJobsToMemorize = noJobs2beRemoved;
         ruinShareFactory = new RuinShareFactory() {
 
