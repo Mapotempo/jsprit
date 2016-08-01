@@ -130,7 +130,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
                 loadAtDepot = route.getVehicle().getInitialCapacity();
         }
         if(act != null && job instanceof Pickup) {
-            Capacity pastMaxLoad = stateManager.getRouteState(route, InternalStates.PAST_MAXLOAD, Capacity.class);
+            Capacity pastMaxLoad = stateManager.getActivityState(act, InternalStates.PAST_MAXLOAD, Capacity.class);
             if (pastMaxLoad == null) pastMaxLoad = defaultValue;
             Capacity futureMinLoad = stateManager.getActivityState(act, InternalStates.FUTURE_MINLOAD, Capacity.class);
             if(futureMinLoad == null) futureMinLoad = defaultValue;
@@ -141,7 +141,7 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
             }
         }
         if (act != null && job instanceof Delivery) {
-            Capacity pastMinLoad = stateManager.getRouteState(route, InternalStates.PAST_MINLOAD, Capacity.class);
+            Capacity pastMinLoad = stateManager.getActivityState(act, InternalStates.PAST_MINLOAD, Capacity.class);
             if (pastMinLoad == null) pastMinLoad = defaultValue;
             Capacity futureMaxLoad = stateManager.getActivityState(act, InternalStates.FUTURE_MAXLOAD, Capacity.class);
             if (futureMaxLoad == null) futureMaxLoad = defaultValue;
