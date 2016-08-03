@@ -1,5 +1,6 @@
 package com.graphhopper.jsprit.core.algorithm.ruin;
 
+import com.graphhopper.jsprit.core.algorithm.state.StateManager;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 
 public class ClusterRuinStrategyFactory implements RuinStrategyFactory  {
@@ -14,7 +15,7 @@ public class ClusterRuinStrategyFactory implements RuinStrategyFactory  {
     }
 
     @Override
-    public RuinStrategy createStrategy(VehicleRoutingProblem vrp) {
-        return new RuinClusters(vrp, initialNumberJobsToRemove, jobNeighborhoods);
+    public RuinStrategy createStrategy(VehicleRoutingProblem vrp, StateManager stateManager) {
+        return new RuinClusters(vrp, stateManager, initialNumberJobsToRemove, jobNeighborhoods);
     }
 }
