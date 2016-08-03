@@ -60,11 +60,11 @@ public class SolomonSkills_IT {
             VehicleImpl skill1Vehicle = VehicleImpl.Builder.newInstance("skill1_vehicle_" + i).addSkill("skill1")
                 .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
                 .setEarliestStart(solomonVehicle.getEarliestDeparture())
-                .setType(newType).build();
+                .setType(newType).setReturnToDepot(true).build();
             VehicleImpl skill2Vehicle = VehicleImpl.Builder.newInstance("skill2_vehicle_" + i).addSkill("skill2")
                 .setStartLocation(TestUtils.loc(solomonVehicle.getStartLocation().getId(), solomonVehicle.getStartLocation().getCoordinate()))
                 .setEarliestStart(solomonVehicle.getEarliestDeparture())
-                .setType(newType).build();
+                .setType(newType).setReturnToDepot(true).build();
             skillProblemBuilder.addVehicle(skill1Vehicle).addVehicle(skill2Vehicle);
         }
         for (Job job : vrp.getJobs().values()) {

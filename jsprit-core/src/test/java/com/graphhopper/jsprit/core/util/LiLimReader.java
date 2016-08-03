@@ -115,7 +115,7 @@ public class LiLimReader {
             .setCostPerDistance(1.0).setFixedCost(fixCosts).build();
         VehicleImpl vehicle = VehicleImpl.Builder.newInstance("vehicle")
             .setEarliestStart(depotOpeningTime).setLatestArrival(depotClosingTime)
-            .setStartLocation(Location.Builder.newInstance().setCoordinate(customers.get(depotId).coord).build()).setType(type).build();
+            .setStartLocation(Location.Builder.newInstance().setCoordinate(customers.get(depotId).coord).build()).setType(type).setReturnToDepot(true).build();
         vrpBuilder.addVehicle(vehicle);
     }
 

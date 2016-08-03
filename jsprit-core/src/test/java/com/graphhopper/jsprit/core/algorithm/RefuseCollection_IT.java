@@ -60,6 +60,7 @@ public class RefuseCollection_IT {
         VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
         vehicleBuilder.setStartLocation(Location.newInstance("1"));
         vehicleBuilder.setType(bigType);
+        vehicleBuilder.setReturnToDepot(true);
         VehicleImpl bigVehicle = vehicleBuilder.build();
 
 		/*
@@ -105,6 +106,7 @@ public class RefuseCollection_IT {
         VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
         vehicleBuilder.setStartLocation(Location.newInstance("1"));
         vehicleBuilder.setType(bigType);
+        vehicleBuilder.setReturnToDepot(true);
         VehicleImpl bigVehicle = vehicleBuilder.build();
 
 		/*
@@ -150,6 +152,7 @@ public class RefuseCollection_IT {
         VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
         vehicleBuilder.setStartLocation(Location.newInstance("1"));
         vehicleBuilder.setType(bigType);
+        vehicleBuilder.setReturnToDepot(true);
         VehicleImpl bigVehicle = vehicleBuilder.build();
 
 		/*
@@ -195,6 +198,7 @@ public class RefuseCollection_IT {
         VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
         vehicleBuilder.setStartLocation(Location.newInstance("1"));
         vehicleBuilder.setType(bigType);
+        vehicleBuilder.setReturnToDepot(true);
         VehicleImpl bigVehicle = vehicleBuilder.build();
 
 		/*
