@@ -89,7 +89,7 @@ public class ChristofidesReader {
                 VehicleTypeImpl vehicleType = VehicleTypeImpl.Builder.newInstance("christophidesType").addCapacityDimension(0, vehicleCapacity).
                     setCostPerDistance(1.0).build();
                 VehicleImpl vehicle = VehicleImpl.Builder.newInstance("christophidesVehicle").setLatestArrival(endTime).setStartLocation(Location.newInstance(depotCoord.getX(), depotCoord.getY())).
-                    setType(vehicleType).build();
+                    setType(vehicleType).setReturnToDepot(true).build();
                 vrpBuilder.addVehicle(vehicle);
             } else {
                 Coordinate customerCoord = makeCoord(tokens[0].trim(), tokens[1].trim());

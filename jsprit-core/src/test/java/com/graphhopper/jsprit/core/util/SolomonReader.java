@@ -105,7 +105,7 @@ public class SolomonReader {
 
                     VehicleImpl vehicle = VehicleImpl.Builder.newInstance("solomonVehicle").setEarliestStart(start).setLatestArrival(end)
                         .setStartLocation(Location.Builder.newInstance().setId(customerId)
-                            .setCoordinate(coord).build()).setType(vehicleType).build();
+                            .setCoordinate(coord).build()).setType(vehicleType).setReturnToDepot(true).build();
                     vrpBuilder.addVehicle(vehicle);
 
                 } else {
