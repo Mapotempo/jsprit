@@ -56,6 +56,7 @@ public class RefuseCollectionWithCostsHigherThanTimesAndFiniteFleet_IT {
         vehicleBuilder.setStartLocation(Location.newInstance("1"));
         vehicleBuilder.setType(bigType);
         vehicleBuilder.setLatestArrival(220);
+        vehicleBuilder.setReturnToDepot(true);
         Vehicle bigVehicle = vehicleBuilder.build();
 
 		/*
