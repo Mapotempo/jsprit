@@ -50,8 +50,6 @@ public final class RuinWorst extends AbstractRuinStrategy {
 
     private SetupTime setupCosts = new SetupTime();
 
-    private StateManager stateManager;
-
     private NoiseMaker noiseMaker = new NoiseMaker() {
 
         @Override
