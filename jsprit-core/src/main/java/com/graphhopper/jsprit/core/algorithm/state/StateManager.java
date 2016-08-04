@@ -623,6 +623,10 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
         }
     }
 
+    public boolean loadUpdateIsActivated() {
+        return updateLoad;
+    }
+
     /**
      * Updates time-window states.
      */

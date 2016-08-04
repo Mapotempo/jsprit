@@ -581,6 +581,7 @@ public class VehicleRoutingAlgorithms {
         } else {
             activityPolicy = ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_ARRIVED;
         }
+
         stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), activityPolicy, vrp.getActivityCosts()));
         stateManager.addStateUpdater(new UpdateVariableCosts(vrp.getActivityCosts(), vrp.getTransportCosts(), stateManager, activityPolicy));
 
@@ -616,6 +617,28 @@ public class VehicleRoutingAlgorithms {
 
         //construct algorithm
         VehicleRoutingAlgorithm metaAlgorithm = prettyAlgorithmBuilder.build();
+        if (stateManager.timeWindowUpdateIsActivated() || stateManager.loadUpdateIsActivated()) {
+            UpdateSwitchNotFeasible notSwitchableUpdate = new UpdateSwitchNotFeasible(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());
+            notSwitchableUpdate.setVehiclesToUpdate(new UpdateSwitchNotFeasible.VehiclesToUpdate() {
+                Map<VehicleTypeKey, Vehicle> uniqueTypes = new HashMap<VehicleTypeKey, Vehicle>();
+
+                @Override
+                public Collection<Vehicle> get(VehicleRoute vehicleRoute) {
+                    if (uniqueTypes.isEmpty()) {
+                        for (Vehicle v : vrp.getVehicles()) {
+                            if (!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())) {
+                                uniqueTypes.put(v.getVehicleTypeIdentifier(), v);
+                            }
+                        }
+                    }
+                    Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
+                    vehicles.addAll(uniqueTypes.values());
+                    return vehicles;
+                }
+            });
+            stateManager.addStateUpdater(notSwitchableUpdate);
+        }
+
         int maxIterations = getMaxIterations(config);
         if (maxIterations > -1) metaAlgorithm.setMaxIterations(maxIterations);
 
