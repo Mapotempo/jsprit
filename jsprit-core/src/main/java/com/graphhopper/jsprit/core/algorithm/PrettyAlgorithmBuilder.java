@@ -119,6 +119,25 @@ public class PrettyAlgorithmBuilder {
             });
             stateManager.addStateUpdater(new UpdateEndLocationIfRouteIsOpen());
             stateManager.addStateUpdater(twUpdater);
+            UpdateSwitchNotFeasible notSwitchableUpdate = new UpdateSwitchNotFeasible(stateManager, vrp.getTransportCosts(), vrp.getActivityCosts());
+            notSwitchableUpdate.setVehiclesToUpdate(new UpdateSwitchNotFeasible.VehiclesToUpdate() {
+                Map<VehicleTypeKey, Vehicle> uniqueTypes = new HashMap<VehicleTypeKey, Vehicle>();
+
+                @Override
+                public Collection<Vehicle> get(VehicleRoute vehicleRoute) {
+                    if (uniqueTypes.isEmpty()) {
+                        for (Vehicle v : vrp.getVehicles()) {
+                            if (!uniqueTypes.containsKey(v.getVehicleTypeIdentifier())) {
+                                uniqueTypes.put(v.getVehicleTypeIdentifier(), v);
+                            }
+                        }
+                    }
+                    Collection<Vehicle> vehicles = new ArrayList<Vehicle>();
+                    vehicles.addAll(uniqueTypes.values());
+                    return vehicles;
+                }
+            });
+            stateManager.addStateUpdater(notSwitchableUpdate);
             stateManager.updateSkillStates();
 
             stateManager.addStateUpdater(new UpdateActivityTimes(vrp.getTransportCosts(), ActivityTimeTracker.ActivityPolicy.AS_SOON_AS_TIME_WINDOW_OPENS, vrp.getActivityCosts()));
