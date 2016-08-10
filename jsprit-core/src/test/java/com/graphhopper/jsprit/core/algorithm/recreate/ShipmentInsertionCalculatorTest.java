@@ -275,7 +275,7 @@ public class ShipmentInsertionCalculatorTest {
     }
 
     @Test
-    public void whenInsertingServiceWhileNoCapIsAvailable_itMustReturnNoInsertionData() {
+    public void whenInsertingServiceWhileNoCapIsAvailableInRoute_itMustInsertAtTheEnd() {
         Shipment shipment = Shipment.Builder.newInstance("s").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("0,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
         Shipment shipment2 = Shipment.Builder.newInstance("s2").addSizeDimension(0, 1).setPickupLocation(Location.Builder.newInstance().setId("10,10").build()).setDeliveryLocation(Location.newInstance("0,0")).build();
 
@@ -319,7 +319,7 @@ public class ShipmentInsertionCalculatorTest {
         InsertionData iData = switcher.getInsertionData(route, service, vehicle, 0, DriverImpl.noDriver(), Double.MAX_VALUE);
 //		routeActVisitor.visit(route);
 
-        assertEquals(3, iData.getDeliveryInsertionIndex());
+        assertEquals(4, iData.getDeliveryInsertionIndex());
     }
 
 

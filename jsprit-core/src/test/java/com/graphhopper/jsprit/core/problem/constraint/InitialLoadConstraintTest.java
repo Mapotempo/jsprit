@@ -789,23 +789,6 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     }
 
     @Test
-    public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenStartAndAct1() {
-        stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
-        Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 16).build();
-        when(s.getSize()).thenReturn(newSize);
-
-        JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
-
-        DeliverShipment newAct = new DeliverShipment(s);
-        PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
-        HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getStart(), newAct, shipment_route.getActivities().get(0), 0.);
-
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
-
-    }
-
-    @Test
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenAct1AndAct2() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
@@ -819,23 +802,6 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
 
         assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
-
-    }
-
-    @Test
-    public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct1AndAct2() {
-        stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
-        Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
-        when(s.getSize()).thenReturn(newSize);
-
-        JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
-
-        DeliverShipment newAct = new DeliverShipment(s);
-        PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
-        HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(0), newAct, shipment_route.getActivities().get(1), 0.);
-
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
 
     }
 
@@ -857,22 +823,6 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     }
 
     @Test
-    public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct2AndAct3() {
-        stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
-        Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 6).build();
-        when(s.getSize()).thenReturn(newSize);
-        JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
-
-        DeliverShipment newAct = new DeliverShipment(s);
-        PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
-        HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(1), newAct, shipment_route.getActivities().get(2), 0.);
-
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
-
-    }
-
-    @Test
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenAct3AndAct4() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
@@ -890,23 +840,6 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
     }
 
     @Test
-    public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct3AndAct4() {
-        stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
-        Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 11).build();
-        when(s.getSize()).thenReturn(newSize);
-
-        JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
-
-        DeliverShipment newAct = new DeliverShipment(s);
-        PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
-        HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(2), newAct, shipment_route.getActivities().get(3), 0.);
-
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
-
-    }
-
-    @Test
     public void whenShipmentRouteAndDeliveryOfNewShipmentShouldFitInBetweenAct4AndEnd() {
         stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
         Shipment s = mock(Shipment.class);
@@ -920,23 +853,6 @@ pickup(s1) pickup(s2) delivery(s2) deliver(s1)
         HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
 
         assertEquals(HardActivityConstraint.ConstraintsStatus.FULFILLED, status);
-
-    }
-
-    @Test
-    public void whenShipmentRouteAndDeliveryOfNewShipmentShouldNotFitInBetweenAct4AndEnd() {
-        stateManager.informInsertionStarts(Arrays.asList(shipment_route), Collections.<Job>emptyList());
-        Shipment s = mock(Shipment.class);
-        Capacity newSize = Capacity.Builder.newInstance().addDimension(0, 21).build();
-        when(s.getSize()).thenReturn(newSize);
-
-        JobInsertionContext context = new JobInsertionContext(shipment_route, s, shipment_route.getVehicle(), null, 0.);
-
-        DeliverShipment newAct = new DeliverShipment(s);
-        PickupAndDeliverShipmentLoadActivityLevelConstraint loadConstraint = new PickupAndDeliverShipmentLoadActivityLevelConstraint(stateManager);
-        HardActivityConstraint.ConstraintsStatus status = loadConstraint.fulfilled(context, shipment_route.getActivities().get(3), newAct, shipment_route.getEnd(), 0.);
-
-        assertEquals(HardActivityConstraint.ConstraintsStatus.NOT_FULFILLED, status);
 
     }
 
