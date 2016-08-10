@@ -24,8 +24,10 @@ import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Job;
 import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
+import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ActivityVisitor;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliverShipment;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.DeliveryActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.PickupActivity;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.ServiceActivity;
@@ -96,7 +98,7 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
         }
         for (TourActivity act : route.getActivities()) {
             if (act instanceof DeliveryActivity) {
-                if(route.getVehicle().getInitialCapacity() == null && !Capacity.addup(routeCurrentLoad,act.getSize()).isGreaterOrEqual(defaultValue)) {
+                if(!(act instanceof DeliverShipment) && route.getVehicle().getInitialCapacity() == null && !Capacity.addup(routeCurrentLoad,act.getSize()).isGreaterOrEqual(defaultValue)) {
                     loadAtDepot = Capacity.addup(loadAtDepot, Capacity.subtract(Capacity.invert(act.getSize()),routeCurrentLoad));
                     routeCurrentLoad = defaultValue;
                 } else {
@@ -131,7 +133,6 @@ class UpdateLoads implements ActivityVisitor, StateUpdater, InsertionStartsListe
             if(inRoute.getVehicle().getInitialCapacity() != null)
                 loadAtEnd = Capacity.addup(loadAtEnd, inRoute.getVehicle().getInitialCapacity());
         }
-
         if (job2insert instanceof Delivery) {
             if(inRoute.getVehicle().getInitialCapacity() == null && !Capacity.subtract(loadAtEnd, job2insert.getSize()).isGreaterOrEqual(defaultValue))
                 stateManager.putTypedInternalRouteState(inRoute, InternalStates.LOAD_AT_BEGINNING, Capacity.addup(loadAtDepot, Capacity.subtract(job2insert.getSize(), loadAtEnd)));

@@ -122,12 +122,20 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
         Capacity defaultValue = Capacity.Builder.newInstance().build();
         Capacity roofValue = route.getVehicle().getType().getCapacityDimensions();
         Capacity loadAtDepot = Capacity.Builder.newInstance().build();
+        Capacity futureCumulativeShipmentLoad = Capacity.Builder.newInstance().build();
+        Capacity currentLoad = Capacity.Builder.newInstance().build();
         if(act != null) {
             loadAtDepot = stateManager.getRouteState(route, InternalStates.LOAD_AT_BEGINNING, Capacity.class);
             if(loadAtDepot == null)
                 loadAtDepot = defaultValue;
             if(route.getVehicle().getInitialCapacity() != null)
                 loadAtDepot = route.getVehicle().getInitialCapacity();
+            currentLoad = stateManager.getActivityState(act, InternalStates.LOAD, Capacity.class);
+            if(currentLoad == null)
+                currentLoad = defaultValue;
+            futureCumulativeShipmentLoad = stateManager.getActivityState(act, InternalStates.FUTURE_MAX_SHIPMENT_LOAD, Capacity.class);
+            if(futureCumulativeShipmentLoad == null)
+                futureCumulativeShipmentLoad = defaultValue;
         }
         if(act != null && job instanceof Pickup) {
             Capacity pastMaxLoad = stateManager.getActivityState(act, InternalStates.PAST_MAXLOAD, Capacity.class);
@@ -138,6 +146,11 @@ public abstract class AbstractRuinStrategy implements RuinStrategy {
                 if(route.getVehicle().getInitialCapacity() != null || route.getVehicle().getInitialCapacity() == null && (!Capacity.addup(loadAtDepot, job.getSize()).isLessOrEqual(route.getVehicle().getType().getCapacityDimensions())
                                                                                                  || !Capacity.addup(pastMaxLoad, job.getSize()).isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()))) {
                 return false;
+            }
+            if(!futureCumulativeShipmentLoad.isLessOrEqual(defaultValue)) {
+                if(route.getVehicle().getInitialCapacity() != null && !Capacity.subtract(currentLoad, job.getSize()).isGreaterOrEqual(futureCumulativeShipmentLoad)
+                        || route.getVehicle().getInitialCapacity() == null && !Capacity.subtract(Capacity.subtract(Capacity.subtract(currentLoad, job.getSize()), route.getVehicle().getType().getCapacityDimensions()), pastMaxLoad).isGreaterOrEqual(futureCumulativeShipmentLoad))
+                    return false;
             }
         }
         if (act != null && job instanceof Delivery) {
