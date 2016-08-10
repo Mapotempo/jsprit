@@ -49,6 +49,8 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
 
     private Capacity minLoad;
 
+    private Capacity futureShipmentMaxLoad;
+
     private Capacity currentLoad;
 
     private Capacity defaultValue;
@@ -69,6 +71,7 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
                 maxLoad = Capacity.addup(maxLoad, route.getVehicle().getInitialCapacity());
         }
         minLoad = maxLoad;
+        futureShipmentMaxLoad = defaultValue;
     }
 
     @Override
@@ -78,6 +81,9 @@ class UpdateMaxCapacityUtilisationAtActivitiesByLookingForwardInRoute implements
         stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MAXLOAD, maxLoad);
         minLoad = Capacity.min(minLoad, currentLoad);
         stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MINLOAD, minLoad);
+        Capacity currentShipmentLoad = stateManager.getActivityState(act, InternalStates.CUMULATIVE_SHIPMENT_LOAD, Capacity.class);
+        futureShipmentMaxLoad = Capacity.max(futureShipmentMaxLoad, currentShipmentLoad);
+        stateManager.putInternalTypedActivityState(act, InternalStates.FUTURE_MAX_SHIPMENT_LOAD, futureShipmentMaxLoad);
 //		assert maxLoad.isLessOrEqual(route.getVehicle().getType().getCapacityDimensions()) : "maxLoad can in every capacity dimension never be bigger than vehicleCap";
 //		assert maxLoad.isGreaterOrEqual(Capacity.Builder.newInstance().build()) : "maxLoad can never be smaller than 0";
     }
