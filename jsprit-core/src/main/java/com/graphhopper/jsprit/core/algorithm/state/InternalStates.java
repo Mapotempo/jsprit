@@ -62,4 +62,6 @@ public class InternalStates {
     public static final StateId CUMULATIVE_SHIPMENT_LOAD = new StateFactory.StateIdImpl("cumulative shipment load", 19);
 
     public static final StateId FUTURE_MAX_SHIPMENT_LOAD = new StateFactory.StateIdImpl("future max cumulative shipment load", 20);
+
+    public static final StateId MAXIMUM_ROUTE_DURATION = new StateFactory.StateIdImpl("maximum_route_duration", 21);
 }
