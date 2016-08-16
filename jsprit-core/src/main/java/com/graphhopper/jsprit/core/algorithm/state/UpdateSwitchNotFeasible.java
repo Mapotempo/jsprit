@@ -67,6 +67,8 @@ public class UpdateSwitchNotFeasible implements RouteVisitor, StateUpdater{
 
     private double[] latest_arrTimes_at_prevAct;
 
+    private double[] setup_duration_at_prevAct;
+
     private Location[] location_of_prevAct;
 
     private Collection<Vehicle> vehicles;
@@ -77,7 +79,9 @@ public class UpdateSwitchNotFeasible implements RouteVisitor, StateUpdater{
         this.transportCosts = tpCosts;
         this.activityCosts = activityCosts;
         latest_arrTimes_at_prevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
+        setup_duration_at_prevAct = new double[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
         location_of_prevAct = new Location[stateManager.getMaxIndexOfVehicleTypeIdentifiers() + 1];
+        
     }
 
     public void setVehiclesToUpdate(VehiclesToUpdate vehiclesToUpdate) {
@@ -90,6 +94,7 @@ public class UpdateSwitchNotFeasible implements RouteVisitor, StateUpdater{
         vehicles = vehiclesToUpdate.get(route);
         for (Vehicle vehicle : vehicles) {
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
+            setup_duration_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = vehicle.getLatestArrival();
             Location location = vehicle.getEndLocation();
             if(!vehicle.isReturnToDepot()){
                 location = route.getEnd().getLocation();
@@ -111,12 +116,13 @@ public class UpdateSwitchNotFeasible implements RouteVisitor, StateUpdater{
             double latestArrTimeAtPrevAct = latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             Location prevLocation = location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()];
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
-                latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activityCosts.getActivityDuration(activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
+                latestArrTimeAtPrevAct, setup_duration_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()], route.getDriver(), vehicle) - activityCosts.getActivityDuration(activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
             double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
             if (latestArrivalTime < activity.getTheoreticalEarliestOperationStartTime()) {
                 stateManager.putTypedInternalRouteState(route, vehicle, InternalStates.SWITCH_NOT_FEASIBLE, true);
             }
             latest_arrTimes_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = latestArrivalTime;
+            setup_duration_at_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getSetupDuration();
 
             location_of_prevAct[vehicle.getVehicleTypeIdentifier().getIndex()] = activity.getLocation();
         }

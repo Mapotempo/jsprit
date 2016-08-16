@@ -59,7 +59,7 @@ public class VehicleRouteDurationConstraints implements HardActivityConstraint {
         if (oldDuration > maximumVehicleDuration && !(prevAct instanceof Start))
             return ConstraintsStatus.NOT_FULFILLED_BREAK;
 
-        double tp_time_prevAct_newAct = this.routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+        double tp_time_prevAct_newAct = this.routingCosts.getTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, newAct.getSetupDuration(), iFacts.getNewDriver(), iFacts.getNewVehicle());
         double newAct_arrTime = prevActDepTime + tp_time_prevAct_newAct;
         double newAct_startTime = Math.max(newAct_arrTime, newAct.getTheoreticalEarliestOperationStartTime());
 
@@ -67,7 +67,7 @@ public class VehicleRouteDurationConstraints implements HardActivityConstraint {
         double routeDurationIncrease = 0.0;
         
         if (prevAct instanceof Start) {
-            double tp_time_start_newAct_backward = this.routingCosts.getBackwardTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double tp_time_start_newAct_backward = this.routingCosts.getBackwardTransportTime(prevAct.getLocation(), newAct.getLocation(), prevActDepTime, newAct.getSetupDuration(), iFacts.getNewDriver(), iFacts.getNewVehicle());
             double newRouteRealStartTime = newAct_startTime - tp_time_start_newAct_backward;
             if (iFacts.getRoute().isEmpty())
                 routeDurationIncrease += prevActDepTime - newRouteRealStartTime;
@@ -78,11 +78,11 @@ public class VehicleRouteDurationConstraints implements HardActivityConstraint {
             routeDurationIncrease += newAct_endTime - prevActDepTime;
         }
         else {
-            double tp_time_newAct_nextAct = this.routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, iFacts.getNewDriver(), iFacts.getNewVehicle());
+            double tp_time_newAct_nextAct = this.routingCosts.getTransportTime(newAct.getLocation(), nextAct.getLocation(), newAct_endTime, nextAct.getSetupDuration(), iFacts.getNewDriver(), iFacts.getNewVehicle());
             double nextAct_arrTime = newAct_endTime + tp_time_newAct_nextAct;
             double endTime_nextAct_new = Math.max(nextAct_arrTime, nextAct.getTheoreticalEarliestOperationStartTime()) + nextAct.getOperationTime();
 
-            double arrTime_nextAct = prevActDepTime + this.routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
+            double arrTime_nextAct = prevActDepTime + this.routingCosts.getTransportTime(prevAct.getLocation(), nextAct.getLocation(), prevAct.getEndTime(), nextAct.getSetupDuration(), iFacts.getRoute().getDriver(), iFacts.getRoute().getVehicle());
             double endTime_nextAct_old = Math.max(arrTime_nextAct, nextAct.getTheoreticalEarliestOperationStartTime()) + nextAct.getOperationTime();
 
             double endTimeDelay_nextAct = Math.max(0.0D, endTime_nextAct_new - endTime_nextAct_old);

@@ -31,14 +31,14 @@ public class UpdateRouteRealStartTime implements StateUpdater, RouteVisitor {
             double routeStartTime = route.getStart().getEndTime();
             double tp_time_start_firstAct = this.routingCosts.getTransportTime(
                     route.getStart().getLocation(), firstAct.getLocation(),
-                    routeStartTime, route.getDriver(), route.getVehicle());
+                    routeStartTime, firstAct.getSetupDuration(), route.getDriver(), route.getVehicle());
             double firstActArrTime = routeStartTime + tp_time_start_firstAct;
             double firstActStartTime = Math.max(
                     firstActArrTime,
                     firstAct.getTheoreticalEarliestOperationStartTime());
             double tp_time_start_firstAct_backward = this.routingCosts.getBackwardTransportTime(
                     route.getStart().getLocation(), firstAct.getLocation(),
-                    firstActStartTime, route.getDriver(), route.getVehicle());
+                    firstActStartTime, firstAct.getSetupDuration(), route.getDriver(), route.getVehicle());
             double routeRealStartTime = firstActStartTime - tp_time_start_firstAct_backward;
             this.stateManager.putTypedInternalRouteState(route, InternalStates.MAXIMUM_ROUTE_DURATION, routeRealStartTime);
         }
