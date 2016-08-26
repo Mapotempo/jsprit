@@ -66,7 +66,7 @@ public class StateManager implements RouteAndActivityStateGetter, IterationStart
 
     private boolean updateRouteDuration = false;
 
-    private final int initialNoStates = 21;
+    private final int initialNoStates = 22;
 
     private int stateIndexCounter;
 

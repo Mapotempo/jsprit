@@ -27,7 +27,7 @@ import java.util.List;
 class StateFactory {
 
     final static List<String> reservedIds = Arrays.asList("max_load", "load", "costs", "load_at_beginning", "load_at_end", "duration", "latest_operation_start_time", "earliest_operation_start_time"
-        , "future_max_load", "past_max_load", "skills");
+        , "future_max_load", "past_max_load", "skills", "min_load", "waiting", "time_slack", "future_waiting", "earliest_without_waiting", "switch_not_feasible", "future_min_load", "past_min_load", "cumulative_shipment_load", "future_max_cumulative_shipment_load", "maximum_route_duration");
 
 
     static StateId createId(String name) {
@@ -70,7 +70,7 @@ class StateFactory {
          */
         @Override
         public int hashCode() {
-            final int prime = 31;
+            final int prime = 32;
             int result = 1;
             result = prime * result + ((name == null) ? 0 : name.hashCode());
             return result;

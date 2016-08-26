@@ -23,7 +23,7 @@ public class InternalStates {
 
     public final static StateId MAXLOAD = new StateFactory.StateIdImpl("max_load", 0);
 
-    public final static StateId MINLOAD = new StateFactory.StateIdImpl("min load", 17);
+    public final static StateId MINLOAD = new StateFactory.StateIdImpl("min_load", 17);
 
     public final static StateId LOAD = new StateFactory.StateIdImpl("load", 1);
 
@@ -57,11 +57,11 @@ public class InternalStates {
 
     public static final StateId FUTURE_MINLOAD = new StateFactory.StateIdImpl("future_min_load", 16);
 
-    public static final StateId PAST_MINLOAD = new StateFactory.StateIdImpl("past min load", 18);
+    public static final StateId PAST_MINLOAD = new StateFactory.StateIdImpl("past_min_load", 18);
 
-    public static final StateId CUMULATIVE_SHIPMENT_LOAD = new StateFactory.StateIdImpl("cumulative shipment load", 19);
+    public static final StateId CUMULATIVE_SHIPMENT_LOAD = new StateFactory.StateIdImpl("cumulative_shipment_load", 19);
 
-    public static final StateId FUTURE_MAX_SHIPMENT_LOAD = new StateFactory.StateIdImpl("future max cumulative shipment load", 20);
+    public static final StateId FUTURE_MAX_SHIPMENT_LOAD = new StateFactory.StateIdImpl("future_max_cumulative_shipment_load", 20);
 
     public static final StateId MAXIMUM_ROUTE_DURATION = new StateFactory.StateIdImpl("maximum_route_duration", 21);
 }

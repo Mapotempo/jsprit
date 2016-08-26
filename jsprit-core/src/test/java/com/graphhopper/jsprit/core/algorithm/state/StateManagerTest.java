@@ -207,7 +207,7 @@ public class StateManagerTest {
     public void whenCreatingNewState_itShouldHaveAnIndex() {
         StateManager stateManager = new StateManager(vrpMock);
         StateId stateId = stateManager.createStateId("foo-state");
-        Assert.assertEquals(21, stateId.getIndex());
+        Assert.assertEquals(22, stateId.getIndex());
     }
 
     @Test
@@ -215,8 +215,8 @@ public class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-foo-state");
-        Assert.assertEquals(21, fooState.getIndex());
-        Assert.assertEquals(22, foofooState.getIndex());
+        Assert.assertEquals(22, fooState.getIndex());
+        Assert.assertEquals(23, foofooState.getIndex());
     }
 
     @Test
@@ -224,8 +224,8 @@ public class StateManagerTest {
         StateManager stateManager = new StateManager(vrpMock);
         StateId fooState = stateManager.createStateId("foo-state");
         StateId foofooState = stateManager.createStateId("foo-state");
-        Assert.assertEquals(21, fooState.getIndex());
-        Assert.assertEquals(21, foofooState.getIndex());
+        Assert.assertEquals(22, fooState.getIndex());
+        Assert.assertEquals(22, foofooState.getIndex());
     }
 
     @Test
