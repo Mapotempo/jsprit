@@ -37,8 +37,9 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
     public final double latestEnd;
     public final Skills skills;
     public final boolean returnToDepot;
+    public final boolean endSet;
 
-    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot) {
+    public VehicleTypeKey(String typeId, Location startLocation, Location endLocation, double earliestStart, double latestEnd, Skills skills, boolean returnToDepot, boolean endSet) {
         super();
         this.type = typeId;
         this.startLocation = startLocation;
@@ -47,6 +48,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         this.latestEnd = latestEnd;
         this.skills = skills;
         this.returnToDepot = returnToDepot;
+        this.endSet = endSet;
     }
 
     @Override
@@ -59,6 +61,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         if (Double.compare(that.earliestStart, earliestStart) != 0) return false;
         if (Double.compare(that.latestEnd, latestEnd) != 0) return false;
         if (returnToDepot != that.returnToDepot) return false;
+        if (endSet != that.endSet) return false;
         if (endLocation != null && that.endLocation != null && !endLocation.getId().equals(that.endLocation.getId())) return false;
         if (!skills.equals(that.skills)) return false;
         if (startLocation != null && that.endLocation != null && !startLocation.getId().equals(that.startLocation.getId())) return false;
@@ -82,6 +85,7 @@ public class VehicleTypeKey extends AbstractVehicle.AbstractTypeKey {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + skills.hashCode();
         result = 31 * result + (returnToDepot ? 1 : 0);
+        result = 31 * result + (endSet ? 1 : 0);
         return result;
     }
 

@@ -678,7 +678,10 @@ public class VrpXMLReader {
                     hasEndLocation = true;
                     endLocationBuilder.setIndex(Integer.parseInt(endLocationIndex));
                 }
-                if (hasEndLocation) builder.setEndLocation(endLocationBuilder.build());
+                if (hasEndLocation) {
+                    builder.setEndLocation(endLocationBuilder.build());
+                    builder.setEndSet(true);
+                }
             }
 
             //read timeSchedule

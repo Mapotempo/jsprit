@@ -65,6 +65,8 @@ public interface Vehicle extends HasId, HasIndex {
      */
     public abstract boolean isReturnToDepot();
 
+    public abstract boolean hasEndSet();
+
     public abstract Location getStartLocation();
 
     public abstract Location getEndLocation();
