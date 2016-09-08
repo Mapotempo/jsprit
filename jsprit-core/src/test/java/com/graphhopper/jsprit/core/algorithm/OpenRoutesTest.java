@@ -21,9 +21,12 @@ import com.graphhopper.jsprit.core.algorithm.box.SchrimpfFactory;
 import com.graphhopper.jsprit.core.algorithm.recreate.NoSolutionFoundException;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.job.Shipment;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
@@ -134,6 +137,52 @@ public class OpenRoutesTest {
 
         Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
 
+        Assert.assertEquals(5., Solutions.bestOf(solutions).getCost(), 0.01);
+
+    }
+
+    @Test
+    public void whenDealingWithNoStartRoute_algorithmShouldCalculateCorrectCosts() {
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(10.)
+            .setType(type).setEndSet(true).setEndLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+        Service service = Service.Builder.newInstance("s")
+            .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build()).build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(FleetSize.FINITE).addJob(service).addVehicle(vehicle).build();
+        VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+        vra.setMaxIterations(10);
+
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+        for(VehicleRoute route : Solutions.bestOf(solutions).getRoutes()) {
+            System.out.println("--");
+            System.out.println(route.getStart().toString());
+            for(TourActivity act : route.getActivities())
+                System.out.println(act.toString());
+            System.out.println(route.getEnd().toString());
+        }
+        Assert.assertEquals(5., Solutions.bestOf(solutions).getCost(), 0.01);
+
+    }
+
+    @Test
+    public void whenDealingWithNoStartNorEndRoute_algorithmShouldCalculateCorrectCosts() {
+        VehicleType type = VehicleTypeImpl.Builder.newInstance("type").build();
+        VehicleImpl vehicle = VehicleImpl.Builder.newInstance("v").setLatestArrival(10.)
+            .setType(type).build();
+
+        Service service = Service.Builder.newInstance("s")
+            .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(5, 0)).build()).build();
+
+        Service service2 = Service.Builder.newInstance("s2")
+                .setLocation(Location.Builder.newInstance().setCoordinate(Coordinate.newInstance(0, 0)).build()).build();
+
+        VehicleRoutingProblem vrp = VehicleRoutingProblem.Builder.newInstance().setFleetSize(FleetSize.FINITE).addJob(service).addJob(service2).addVehicle(vehicle).build();
+
+        VehicleRoutingAlgorithm vra = new SchrimpfFactory().createAlgorithm(vrp);
+        vra.setMaxIterations(10);
+
+        Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
         Assert.assertEquals(5., Solutions.bestOf(solutions).getCost(), 0.01);
 
     }

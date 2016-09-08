@@ -59,7 +59,7 @@ class AdditionalAccessEgressCalculator {
 
             delta_access = accessTransportCostNew - accessTransportCostOld;
 
-            if (newVehicle.isReturnToDepot()) {
+            if (newVehicle.isReturnToDepot() || newVehicle.hasEndSet()) {
                 TourActivity lastActivityBeforeEndOfRoute = currentRoute.getActivities().get(currentRoute.getActivities().size() - 1);
                 double lastActivityEndTimeWithOldVehicleAndDepartureTime = lastActivityBeforeEndOfRoute.getEndTime();
                 double lastActivityEndTimeEstimationWithNewVehicleAndNewDepartureTime = Math.max(0.0, lastActivityEndTimeWithOldVehicleAndDepartureTime + (newVehicleDepartureTime - currentRoute.getDepartureTime()));

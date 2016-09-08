@@ -75,6 +75,11 @@ public class VehicleImpl extends AbstractVehicle {
         }
 
         @Override
+        public boolean hasEndSet() {
+            return false;
+        }
+
+        @Override
         public Location getStartLocation() {
             return null;
         }
@@ -117,6 +122,8 @@ public class VehicleImpl extends AbstractVehicle {
         private double latestArrival = Double.MAX_VALUE;
 
         private boolean returnToDepot = false;
+
+        private boolean endSet = false;
 
         private VehicleType type = VehicleTypeImpl.Builder.newInstance("default").build();
 
@@ -162,6 +169,11 @@ public class VehicleImpl extends AbstractVehicle {
          */
         public Builder setReturnToDepot(boolean returnToDepot) {
             this.returnToDepot = returnToDepot;
+            return this;
+        }
+
+        public Builder setEndSet(boolean endSet) {
+            this.endSet = endSet;
             return this;
         }
 
@@ -278,6 +290,8 @@ public class VehicleImpl extends AbstractVehicle {
 
     private final boolean returnToDepot;
 
+    private final boolean endSet;
+
     private final Skills skills;
 
     private final Location endLocation;
@@ -292,12 +306,13 @@ public class VehicleImpl extends AbstractVehicle {
         earliestDeparture = builder.earliestStart;
         latestArrival = builder.latestArrival;
         returnToDepot = builder.returnToDepot;
+        endSet = builder.endSet;
         skills = builder.skills;
         endLocation = builder.endLocation;
         startLocation = builder.startLocation;
         aBreak = builder.aBreak;
 //        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(),startLocation.getId(),endLocation.getId(),earliestDeparture,latestArrival,skills));
-        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation, endLocation, earliestDeparture, latestArrival, skills, returnToDepot));
+        setVehicleIdentifier(new VehicleTypeKey(type.getTypeId(), startLocation, endLocation, earliestDeparture, latestArrival, skills, returnToDepot, endSet));
     }
 
     /**
@@ -312,6 +327,7 @@ public class VehicleImpl extends AbstractVehicle {
             "[startLocation=" + startLocation + "]" +
             "[endLocation=" + endLocation + "]" +
             "[isReturnToDepot=" + isReturnToDepot() + "]" +
+            "[hasEndSet=" + hasEndSet() + "]" +
             "[skills=" + skills + "]";
     }
 
@@ -338,6 +354,10 @@ public class VehicleImpl extends AbstractVehicle {
 
     public boolean isReturnToDepot() {
         return returnToDepot;
+    }
+
+    public boolean hasEndSet() {
+        return endSet;
     }
 
     @Override

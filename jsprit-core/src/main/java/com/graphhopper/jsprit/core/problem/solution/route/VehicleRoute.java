@@ -300,6 +300,8 @@ public class VehicleRoute {
             if(vehicle.getEndLocation() == null) {
                 if(vehicle.isReturnToDepot())
                     end.setLocation(vehicle.getStartLocation());
+                else if (vehicle.hasEndSet())
+                    end.setLocation(vehicle.getEndLocation());
                 else if (!tourActivities.isEmpty())
                     end.setLocation(tourActivities.getActivities().get(tourActivities.getActivities().size() - 1).getLocation());
             }
