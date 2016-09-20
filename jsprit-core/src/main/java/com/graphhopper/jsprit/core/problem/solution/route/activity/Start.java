@@ -48,6 +48,8 @@ public final class Start extends AbstractActivity implements TourActivity {
 
     private Location location;
 
+    private boolean hasExtendedTW = false;
+
     private Start(String locationId, double theoreticalStart, double theoreticalEnd) {
         super();
         if (locationId != null) this.location = Location.Builder.newInstance().setId(locationId).build();
@@ -149,22 +151,14 @@ public final class Start extends AbstractActivity implements TourActivity {
         return capacity;
     }
 
-	@Override
-	public double getSoftLowerBoundOperationStartTime() {
-		return theoretical_earliestOperationStartTime;
-	}
+    @Override
+    public void setHasExtendedTimeWindow(boolean extended) {
+        this.hasExtendedTW = extended;
+    }
 
-	@Override
-	public double getSoftUpperBoundOperationStartTime() {
-		return theoretical_latestOperationStartTime;
-	}
-
-	@Override
-	public void setSoftEarliestoperationStartTime(double softEarliest) {
-	}
-
-	@Override
-	public void setSoftLatestOperationStartTime(double softLatest) {		
-	}
+    @Override
+    public boolean getHasExtendedTimeWindow() {
+        return hasExtendedTW;
+    }
 
 }

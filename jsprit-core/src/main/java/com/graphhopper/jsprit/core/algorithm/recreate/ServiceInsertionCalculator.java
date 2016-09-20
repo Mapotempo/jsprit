@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
@@ -32,6 +33,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +67,9 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager) {
+    private RouteAndActivityStateGetter stateManager;
+
+    public ServiceInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator additionalTransportCostsCalculator, ConstraintManager constraintManager, RouteAndActivityStateGetter statesManager) {
         super();
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
@@ -73,6 +77,7 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         hardActivityLevelConstraint = constraintManager;
         softActivityConstraint = constraintManager;
         softRouteConstraint = constraintManager;
+        this.stateManager = statesManager;
         this.additionalTransportCostsCalculator = additionalTransportCostsCalculator;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
         logger.debug("initialise {}", this);
@@ -113,8 +118,14 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
         double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
 
         double bestCost = bestKnownCosts;
+        boolean bestCostTW = false;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 		TimeWindow bestTimeWindow = null;
+        if(stateManager.getRouteState(currentRoute, InternalStates.LATENESS, Double.class) != null && stateManager.getRouteState(currentRoute, InternalStates.LATENESS, Double.class) < newVehicle.getLatenessTolerance() && service.getTimeWindow().getSoftEnd() < service.getTimeWindow().getHardEnd()) {
+            deliveryAct2Insert.setHasExtendedTimeWindow(true);
+        } else {
+            deliveryAct2Insert.setHasExtendedTimeWindow(false);
+        }
 
         /*
         generate new start and end for new vehicle
@@ -137,10 +148,12 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
             }
             boolean not_fulfilled_break = true;
 			for(TimeWindow timeWindow : service.getTimeWindows()) {
+			    if(deliveryAct2Insert.getHasExtendedTimeWindow()) {
+		            deliveryAct2Insert.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getSoftEnd());
+			    } else {
+                    deliveryAct2Insert.setTheoreticalLatestOperationStartTime(service.getTimeWindow().getHardEnd());
+			    }
                 deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(timeWindow.getStart());
-                deliveryAct2Insert.setSoftEarliestoperationStartTime(timeWindow.getSoftStart());
-                deliveryAct2Insert.setSoftLatestOperationStartTime(timeWindow.getSoftEnd());
-                deliveryAct2Insert.setTheoreticalLatestOperationStartTime(timeWindow.getEnd());
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(actIndex);
                 insertionContext.setActivityContext(activityContext);
@@ -150,6 +163,10 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
                     double additionalTransportationCosts = additionalTransportCostsCalculator.getCosts(insertionContext, prevAct, nextAct, deliveryAct2Insert, prevActStartTime);
                     if (additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts < bestCost) {
                         bestCost = additionalICostsAtRouteLevel + additionalICostsAtActLevel + additionalTransportationCosts;
+                        if (timeWindow.getSoftEnd() >= prevActStartTime + transportCosts.getTransportCost(prevAct.getLocation(), deliveryAct2Insert.getLocation(), prevActStartTime, newDriver, newVehicle))
+                            bestCostTW = false;
+                        else
+                            bestCostTW = true;
                         insertionIndex = actIndex;
                         bestTimeWindow = timeWindow;
                     }
@@ -168,10 +185,15 @@ final class ServiceInsertionCalculator implements JobInsertionCostsCalculator {
             return InsertionData.createEmptyInsertionData();
         }
         InsertionData insertionData = new InsertionData(bestCost, InsertionData.NO_INDEX, insertionIndex, newVehicle, newDriver);
+
+        if(bestCostTW) {
+            deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getSoftEnd());
+            deliveryAct2Insert.setHasExtendedTimeWindow(true);
+        } else {
+            deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
+            deliveryAct2Insert.setHasExtendedTimeWindow(false);
+        }
         deliveryAct2Insert.setTheoreticalEarliestOperationStartTime(bestTimeWindow.getStart());
-        deliveryAct2Insert.setSoftEarliestoperationStartTime(bestTimeWindow.getSoftStart());
-        deliveryAct2Insert.setSoftLatestOperationStartTime(bestTimeWindow.getSoftEnd());
-        deliveryAct2Insert.setTheoreticalLatestOperationStartTime(bestTimeWindow.getEnd());
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliveryAct2Insert, insertionIndex));
         insertionData.getEvents().add(new SwitchVehicle(currentRoute,newVehicle,newVehicleDepartureTime));
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);

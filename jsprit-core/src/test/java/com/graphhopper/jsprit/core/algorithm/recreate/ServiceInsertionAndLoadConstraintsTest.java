@@ -108,8 +108,9 @@ public class ServiceInsertionAndLoadConstraintsTest {
 
     private void createInsertionCalculator(HardRouteConstraint hardRouteLevelConstraint) {
         ConstraintManager constraintManager = new ConstraintManager(mock(VehicleRoutingProblem.class), mock(RouteAndActivityStateGetter.class));
+        StateManager stateManager = new StateManager(mock(VehicleRoutingProblem.class));
         constraintManager.addConstraint(hardRouteLevelConstraint);
-        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, stateManager);
     }
 
     @Test
@@ -143,9 +144,9 @@ public class ServiceInsertionAndLoadConstraintsTest {
         stateManager.informInsertionStarts(Arrays.asList(route), null);
 
         JobCalculatorSwitcher switcher = new JobCalculatorSwitcher();
-        ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        ServiceInsertionCalculator serviceInsertionCalc = new ServiceInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, stateManager);
         serviceInsertionCalc.setJobActivityFactory(activityFactory);
-        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager);
+        ShipmentInsertionCalculator insertionCalculator = new ShipmentInsertionCalculator(routingCosts, activityCosts, activityInsertionCostsCalculator, constraintManager, stateManager);
         insertionCalculator.setJobActivityFactory(activityFactory);
 
         switcher.put(Pickup.class, serviceInsertionCalc);

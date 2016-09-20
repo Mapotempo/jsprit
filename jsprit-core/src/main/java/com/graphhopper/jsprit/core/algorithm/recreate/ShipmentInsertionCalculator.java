@@ -17,6 +17,7 @@
  */
 package com.graphhopper.jsprit.core.algorithm.recreate;
 
+import com.graphhopper.jsprit.core.algorithm.state.InternalStates;
 import com.graphhopper.jsprit.core.problem.JobActivityFactory;
 import com.graphhopper.jsprit.core.problem.constraint.*;
 import com.graphhopper.jsprit.core.problem.constraint.HardActivityConstraint.ConstraintsStatus;
@@ -32,6 +33,7 @@ import com.graphhopper.jsprit.core.problem.solution.route.activity.End;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.Start;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TimeWindow;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.graphhopper.jsprit.core.problem.solution.route.state.RouteAndActivityStateGetter;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +63,9 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
     private AdditionalAccessEgressCalculator additionalAccessEgressCalculator;
 
-    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager) {
+    private RouteAndActivityStateGetter stateManager;
+
+    public ShipmentInsertionCalculator(VehicleRoutingTransportCosts routingCosts, VehicleRoutingActivityCosts activityCosts, ActivityInsertionCostsCalculator activityInsertionCostsCalculator, ConstraintManager constraintManager, RouteAndActivityStateGetter statesManager) {
         super();
         this.activityInsertionCostsCalculator = activityInsertionCostsCalculator;
         this.hardRouteLevelConstraint = constraintManager;
@@ -70,6 +74,7 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         this.softRouteConstraint = constraintManager;
         this.transportCosts = routingCosts;
         this.activityCosts = activityCosts;
+        this.stateManager = statesManager;
         additionalAccessEgressCalculator = new AdditionalAccessEgressCalculator(routingCosts);
         logger.debug("initialise {}", this);
     }
@@ -93,6 +98,18 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         Shipment shipment = (Shipment) jobToInsert;
         TourActivity pickupShipment = activityFactory.createActivities(shipment).get(0);
         TourActivity deliverShipment = activityFactory.createActivities(shipment).get(1);
+        boolean pickupCouldBeLate = shipment.getPickupTimeWindow().getSoftEnd() < shipment.getPickupTimeWindow().getHardEnd() ? true : false;
+        boolean deliveryCouldBeLate = shipment.getDeliveryTimeWindow().getSoftEnd() < shipment.getDeliveryTimeWindow().getHardEnd() ? true : false;
+        pickupShipment.setHasExtendedTimeWindow(false);
+        deliverShipment.setHasExtendedTimeWindow(false);
+        if(stateManager.getRouteState(currentRoute, InternalStates.LATENESS, Double.class) != null && stateManager.getRouteState(currentRoute, InternalStates.LATENESS, Double.class) < newVehicle.getLatenessTolerance()) {
+            double random = Math.random();
+            if(pickupCouldBeLate && deliveryCouldBeLate && stateManager.getRouteState(currentRoute, InternalStates.LATENESS, Double.class) < newVehicle.getLatenessTolerance() - 1 || pickupCouldBeLate && random < 0.5)
+                pickupShipment.setHasExtendedTimeWindow(true);
+            if(pickupCouldBeLate && deliveryCouldBeLate && stateManager.getRouteState(currentRoute, InternalStates.LATENESS, Double.class) < newVehicle.getLatenessTolerance() - 1 || deliveryCouldBeLate && random >= 0.5)
+                deliverShipment.setHasExtendedTimeWindow(true);
+        }
+
         insertionContext.getAssociatedActivities().add(pickupShipment);
         insertionContext.getAssociatedActivities().add(deliverShipment);
 
@@ -108,6 +125,8 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
         double additionalICostsAtRouteLevel = softRouteConstraint.getCosts(insertionContext);
 
         double bestCost = bestKnownCosts;
+        boolean pickupBestTW = false;
+        boolean deliveryBestTW = false;
         additionalICostsAtRouteLevel += additionalAccessEgressCalculator.getCosts(insertionContext);
 
         int pickupInsertionIndex = InsertionData.NO_INDEX;
@@ -143,10 +162,12 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
             boolean pickupInsertionNotFulfilledBreak = true;
             for(TimeWindow pickupTimeWindow : shipment.getPickupTimeWindows()) {
+                if(pickupShipment.getHasExtendedTimeWindow()) {
+                    pickupShipment.setTheoreticalLatestOperationStartTime(shipment.getPickupTimeWindow().getSoftEnd());
+                } else {
+                    pickupShipment.setTheoreticalLatestOperationStartTime(shipment.getPickupTimeWindow().getHardEnd());
+                }
                 pickupShipment.setTheoreticalEarliestOperationStartTime(pickupTimeWindow.getHardStart());
-                pickupShipment.setSoftEarliestoperationStartTime(pickupTimeWindow.getSoftStart());
-                pickupShipment.setSoftLatestOperationStartTime(pickupTimeWindow.getSoftEnd());
-                pickupShipment.setTheoreticalLatestOperationStartTime(pickupTimeWindow.getHardEnd());
                 ActivityContext activityContext = new ActivityContext();
                 activityContext.setInsertionIndex(i);
                 insertionContext.setActivityContext(activityContext);
@@ -191,10 +212,12 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
 
                     boolean deliveryInsertionNotFulfilledBreak = true;
                     for (TimeWindow deliveryTimeWindow : shipment.getDeliveryTimeWindows()) {
+                        if(deliverShipment.getHasExtendedTimeWindow()) {
+                            deliverShipment.setTheoreticalLatestOperationStartTime(shipment.getDeliveryTimeWindow().getSoftEnd());
+                        } else {
+                            deliverShipment.setTheoreticalLatestOperationStartTime(shipment.getDeliveryTimeWindow().getHardEnd());
+                        }
                         deliverShipment.setTheoreticalEarliestOperationStartTime(deliveryTimeWindow.getStart());
-                        deliverShipment.setSoftEarliestoperationStartTime(deliveryTimeWindow.getSoftStart());
-                        deliverShipment.setSoftLatestOperationStartTime(deliveryTimeWindow.getSoftEnd());
-                        deliverShipment.setTheoreticalLatestOperationStartTime(deliveryTimeWindow.getEnd());
                         ActivityContext activityContext_ = new ActivityContext();
                         activityContext_.setInsertionIndex(j);
                         insertionContext.setActivityContext(activityContext_);
@@ -210,6 +233,15 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
                                 deliveryInsertionIndex = j;
                                 bestPickupTimeWindow = pickupTimeWindow;
                                 bestDeliveryTimeWindow = deliveryTimeWindow;
+                                if (shipment.getPickupTimeWindow().getSoftEnd() >= shipmentPickupArrTime)
+                                    pickupBestTW = false;
+                                else
+                                    pickupBestTW = true;
+
+                                if (shipment.getDeliveryTimeWindow().getSoftEnd() >= prevActEndTime_deliveryLoop + transportCosts.getTransportCost(prevAct_deliveryLoop.getLocation(), deliverShipment.getLocation(), prevActEndTime_deliveryLoop, newDriver, newVehicle))
+                                    deliveryBestTW = false;
+                                else
+                                    deliveryBestTW = true;
                             }
                             deliveryInsertionNotFulfilledBreak = false;
                         } else if (deliverShipmentConstraintStatus.equals(ConstraintsStatus.NOT_FULFILLED)) {
@@ -237,13 +269,23 @@ final class ShipmentInsertionCalculator implements JobInsertionCostsCalculator {
             return InsertionData.createEmptyInsertionData();
         }
         InsertionData insertionData = new InsertionData(bestCost, pickupInsertionIndex, deliveryInsertionIndex, newVehicle, newDriver);
+        if(pickupBestTW) {
+            pickupShipment.setTheoreticalLatestOperationStartTime(bestPickupTimeWindow.getSoftEnd());
+            pickupShipment.setHasExtendedTimeWindow(true);
+        } else {
+            pickupShipment.setTheoreticalLatestOperationStartTime(bestPickupTimeWindow.getEnd());
+            pickupShipment.setHasExtendedTimeWindow(false);
+        }
+        if(deliveryBestTW) {
+            deliverShipment.setTheoreticalLatestOperationStartTime(bestDeliveryTimeWindow.getSoftEnd());
+            deliverShipment.setHasExtendedTimeWindow(true);
+        } else {
+            deliverShipment.setTheoreticalLatestOperationStartTime(bestDeliveryTimeWindow.getEnd());
+            deliverShipment.setHasExtendedTimeWindow(false);
+        }
         pickupShipment.setTheoreticalEarliestOperationStartTime(bestPickupTimeWindow.getStart());
-        pickupShipment.setSoftEarliestoperationStartTime(bestPickupTimeWindow.getSoftStart());
-        pickupShipment.setSoftLatestOperationStartTime(bestPickupTimeWindow.getSoftEnd());
         pickupShipment.setTheoreticalLatestOperationStartTime(bestPickupTimeWindow.getEnd());
         deliverShipment.setTheoreticalEarliestOperationStartTime(bestDeliveryTimeWindow.getStart());
-        deliverShipment.setSoftEarliestoperationStartTime(bestDeliveryTimeWindow.getSoftStart());
-        deliverShipment.setSoftLatestOperationStartTime(bestDeliveryTimeWindow.getSoftEnd());
         deliverShipment.setTheoreticalLatestOperationStartTime(bestDeliveryTimeWindow.getEnd());
         insertionData.setVehicleDepartureTime(newVehicleDepartureTime);
         insertionData.getEvents().add(new InsertActivity(currentRoute, newVehicle, deliverShipment, deliveryInsertionIndex));

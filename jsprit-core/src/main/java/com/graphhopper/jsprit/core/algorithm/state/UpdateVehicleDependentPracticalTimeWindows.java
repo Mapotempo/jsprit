@@ -106,7 +106,8 @@ public class UpdateVehicleDependentPracticalTimeWindows implements RouteVisitor,
             double potentialLatestArrivalTimeAtCurrAct = latestArrTimeAtPrevAct - transportCosts.getBackwardTransportTime(activity.getLocation(), prevLocation,
                 latestArrTimeAtPrevAct, route.getDriver(), vehicle) - activityCosts.getActivityDuration(activity, latestArrTimeAtPrevAct, route.getDriver(), route.getVehicle());
             double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
-            if (latestArrivalTime < activity.getTheoreticalEarliestOperationStartTime()) {
+            Double lateness = stateManager.getRouteState(route, InternalStates.LATENESS, Double.class);
+            if (latestArrivalTime < activity.getTheoreticalEarliestOperationStartTime() || lateness != null && lateness > vehicle.getLatenessTolerance()) {
                 stateManager.putTypedInternalRouteState(route, vehicle, InternalStates.SWITCH_NOT_FEASIBLE, true);
             }
             stateManager.putInternalTypedActivityState(activity, vehicle, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);

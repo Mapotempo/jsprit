@@ -35,9 +35,7 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
 
     private double latest = Double.MAX_VALUE;
 
-    private double softEarliest = 0.;
-
-    private double softLatest = Double.MAX_VALUE;
+    private boolean hasExtendedTW = false;
 
     public PickupShipment(Shipment shipment) {
         super();
@@ -51,8 +49,6 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
         setIndex(pickupShipmentActivity.getIndex());
         this.earliest = pickupShipmentActivity.getTheoreticalEarliestOperationStartTime();
         this.latest = pickupShipmentActivity.getTheoreticalLatestOperationStartTime();
-        this.softEarliest = pickupShipmentActivity.getSoftLowerBoundOperationStartTime();
-        this.softLatest = pickupShipmentActivity.getSoftUpperBoundOperationStartTime();
     }
 
     @Override
@@ -63,27 +59,11 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
     @Override
     public void setTheoreticalEarliestOperationStartTime(double earliest) {
         this.earliest = earliest;
-        if(this.softEarliest < earliest)
-        	this.softEarliest = earliest;
     }
 
     @Override
     public void setTheoreticalLatestOperationStartTime(double latest) {
         this.latest = latest;
-        if(this.softLatest > latest)
-        	this.softLatest = latest;
-    }
-
-    public void setSoftEarliestoperationStartTime(double earliest) {
-    	this.softEarliest = earliest;
-    	if(this.earliest > earliest)
-    		this.earliest = earliest;
-    }
-
-    public void setSoftLatestOperationStartTime(double latest) {
-    	this.softLatest = latest;
-    	if(this.latest < latest)
-    		this.latest = latest;
     }
 
     @Override
@@ -148,13 +128,13 @@ public final class PickupShipment extends AbstractActivity implements PickupActi
         return shipment.getSize();
     }
 
-	@Override
-	public double getSoftLowerBoundOperationStartTime() {
-		return softEarliest;
-	}
+    @Override
+    public void setHasExtendedTimeWindow(boolean extended) {
+        this.hasExtendedTW = extended;
+    }
 
-	@Override
-	public double getSoftUpperBoundOperationStartTime() {
-		return softLatest;
-	}
+    @Override
+    public boolean getHasExtendedTimeWindow() {
+        return hasExtendedTW;
+    }
 }

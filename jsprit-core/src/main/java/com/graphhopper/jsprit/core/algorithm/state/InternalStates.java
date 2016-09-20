@@ -56,4 +56,6 @@ public class InternalStates {
     public static final StateId NEXT_LATE = new StateFactory.StateIdImpl("activities_late", 16);
 
     public static final StateId NEXT_EARLY = new StateFactory.StateIdImpl("activities_early", 17);
+
+    public static final StateId LATENESS = new StateFactory.StateIdImpl("activities_late", 18);
 }

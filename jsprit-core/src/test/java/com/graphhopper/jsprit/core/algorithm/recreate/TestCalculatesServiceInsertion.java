@@ -131,7 +131,7 @@ public class TestCalculatesServiceInsertion {
 
         VehicleRoutingActivityCosts actCosts = mock(VehicleRoutingActivityCosts.class);
 
-        serviceInsertion = new ServiceInsertionCalculator(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager);
+        serviceInsertion = new ServiceInsertionCalculator(costs, vrp.getActivityCosts(), new LocalActivityInsertionCostsCalculator(costs, actCosts, states), cManager, states);
         serviceInsertion.setJobActivityFactory(new JobActivityFactory() {
             @Override
             public List<AbstractActivity> createActivities(Job job) {

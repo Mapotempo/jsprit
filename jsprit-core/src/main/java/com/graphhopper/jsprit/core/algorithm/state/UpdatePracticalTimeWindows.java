@@ -65,7 +65,7 @@ public class UpdatePracticalTimeWindows implements ReverseActivityVisitor, State
         double latestArrivalTime = Math.min(activity.getTheoreticalLatestOperationStartTime(), potentialLatestArrivalTimeAtCurrAct);
 
         states.putInternalTypedActivityState(activity, InternalStates.LATEST_OPERATION_START_TIME, latestArrivalTime);
-        if(activity.getArrTime() > activity.getSoftUpperBoundOperationStartTime())
+        if(activity.getHasExtendedTimeWindow())
             ++counterLate;
         states.putInternalTypedActivityState(activity, InternalStates.NEXT_LATE, counterLate);
 
