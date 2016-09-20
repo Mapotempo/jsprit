@@ -64,6 +64,7 @@
                                         <xs:element name="returnToDepot" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="skills" type="xs:string" minOccurs="0" maxOccurs="1"/>
                                         <xs:element name="breaks" type="breaksType" minOccurs="0" maxOccurs="1"/>
+                                        <xs:element name="late" type="xs:double" minOccurs="0" maxOccurs="1"/>
                                     </xs:all>
                                     <xs:attribute name="type" type="xs:string" use="optional"/>
                                 </xs:complexType>
@@ -110,10 +111,6 @@
                                                     <xs:element name="service" type="xs:decimal" minOccurs="0"
                                                                 maxOccurs="1" default="0.0"/>
                                                     <xs:element name="wait" type="xs:decimal" minOccurs="0"
-                                                                maxOccurs="1" default="0.0"/>
-                                                    <xs:element name="early" type="xs:decimal" minOccurs="0"
-                                                                maxOccurs="1" default="0.0"/>
-                                                    <xs:element name="late" type="xs:decimal" minOccurs="0"
                                                                 maxOccurs="1" default="0.0"/>
                                                 </xs:all>
                                             </xs:complexType>
